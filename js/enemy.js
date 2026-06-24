@@ -351,14 +351,16 @@ class Watch extends Enemy {
         super(x, y, r, s, hp, maxhp, 180, 18);
         this.timer = 0;
         this.mass = 6;
-        //this.delay = parseInt(400 + 300 * Math.random());
-        this.delay = 500;
+        this.delay = parseInt(600 + 300 * Math.random());
+        //this.delay = 500;
         this.nextShot = 5;
         this.volleyShots = 0;
         this.shotsLeft = 0;
-        this.nextShotTimer = 5;
+        this.nextShotTimer = 3;
         this.facing1 = false;
         this.facing2 = false;
+        this.shotsPerVolley = 5;
+        this.spreadAngle = 1; // total fan width in radians
     }
 
     render() {
@@ -403,24 +405,42 @@ class Watch extends Enemy {
           this.nextShotTimer = 5;
           this.timer = 0;
       }
-      if (this.shotsLeft > 0 && this.nextShotTimer == 0){
-          const angle = Math.atan2(
-              player.y - this.y,
-              player.x - this.x
-          );
-          bullets.push(
-              new Bullet(
-                  this.x,
-                  this.y,
-                  angle + (Math.random() - 0.5) * 1.25,
-                  19,
-                  18,
-                  16
-              )
-          );
-          this.shotsLeft--;
-          this.nextShotTimer = 5;
-      }
+      if (this.timer % this.delay == 0) {
+    this.shotsLeft = this.shotsPerVolley;
+    this.nextShotTimer = this.shotsPerVolley;
+    this.timer = 0;
+}
+
+if (this.shotsLeft > 0 && this.nextShotTimer == 0) {
+    const angle = Math.atan2(
+        player.y - this.y,
+        player.x - this.x
+    );
+
+    const shotIndex = this.shotsPerVolley - this.shotsLeft;
+
+    let offset = 0;
+
+    if (this.shotsPerVolley > 1) {
+        offset =
+            -this.spreadAngle / 2 +
+            shotIndex * (this.spreadAngle / (this.shotsPerVolley - 1));
+    }
+
+    bullets.push(
+        new Bullet(
+            this.x,
+            this.y,
+            angle + offset,
+            19,
+            18,
+            16
+        )
+    );
+
+    this.shotsLeft--;
+    this.nextShotTimer = 3;
+}
     }
 }
 

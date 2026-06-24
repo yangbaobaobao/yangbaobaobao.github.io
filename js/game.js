@@ -84,7 +84,7 @@ const world = { x:0, y:0, radius:1600 };
 const camera = { x:0, y:0 };
 
 const player = new Player(0, 0);
-player.speed = 10;
+player.speed = 9;
 player.vx = 0;
 player.vy = 0;
 player.friction = 0.985;
