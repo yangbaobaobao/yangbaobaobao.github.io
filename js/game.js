@@ -339,7 +339,7 @@ function updateWaves() {
 
   const currentHp = getCurrentEnemyHpPool();
   const hpLost = currentWaveHpPool - currentHp;
-  const halfHpLost = hpLost >= currentWaveHpPool * 0.8;
+  const halfHpLost = hpLost >= currentWaveHpPool * 0.765;
   const timePassed = waveTimer >= timePerWave;
 
   if (!currentWaveTriggered && (halfHpLost || timePassed)) {
