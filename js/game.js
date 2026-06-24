@@ -141,7 +141,7 @@ if (false){
       const r = 500 + 20 * theta;
 
       enemies.push(
-          new AirPod(
+          new AirPod( 
               Math.cos(theta) * r,
               Math.sin(theta) * r,
               50,
