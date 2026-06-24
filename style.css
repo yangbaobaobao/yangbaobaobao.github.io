@@ -17,9 +17,12 @@ canvas {
 }
 
 .game-over-ui {
+    font-family: Arial, sans-serif;
     position: relative;
     transform: translate(0%,20%);
     z-index: 1;
+    color: red;
+    text-shadow: 0 0 20px red;
 }
 
 .center {

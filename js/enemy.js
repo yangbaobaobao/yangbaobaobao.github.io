@@ -625,7 +625,7 @@ class Ring extends Enemy {
     }
 
     else if (this.state === "lock") {
-      this.turnSpeed = 0.019;
+      this.turnSpeed = 0.0175;
         this.lockTimer--;
 
     drawIndicator(

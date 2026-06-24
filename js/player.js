@@ -63,14 +63,14 @@ class Player {
       }
 
       if (keys["h"] && this.hpHeal < this.maxHp)
-          this.hpHeal+=8.5;
+          this.hpHeal+=8.3;
       if (this.hpHeal > 0) {
         this.hpHeal-=8;
         this.hpHeal = Math.max(this.hpHeal, 0);
       }
 
       if (this.hpHeal >= this.maxHp){
-        this.hp += 30;
+        this.hp += 60;
         this.hp = Math.min(this.hp, this.maxHp);
         this.hpHeal = 0;
       }

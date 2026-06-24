@@ -25,6 +25,8 @@ ringImg.src = "SmartRingCOLMIR02Gold1-removebg-preview.png";
 const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png"
 
+var healKey = "h";
+
 let lc = [];
 let enemies = [];
 var cameraShakeX = 0;

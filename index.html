@@ -2,14 +2,27 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>BOIS VS TECH</title>
-  <link rel="stylesheet" href="style.css">
+  <title>TECH VS PLAYER</title>
+  <link rel="stylesheet" href="intro.css">
 </head>
 <body>
-  <canvas id="game"></canvas>
-  <script src="js/effects.js"></script>
-  <script src="js/enemy.js"></script>
-  <script src="js/player.js"></script>
-  <script src="js/game.js"></script>
+  <canvas id="introCanvas"></canvas>
+
+  <div class="intro-ui">
+    <h1 class="title">TECHFALL</h1>
+    <p class="subtitle">403: VICTORY FORBIDDEN</p>
+
+    <button onclick="startGame()">START GAME</button>
+
+  <div class="difficulty">
+    <p  class="subtitle">DIFFICULTY</p>
+    <button id="difficultyButton" onclick="cycleDifficulty()">
+      NOOB
+    </button>
+  </div>
+
+  </div>
+
+  <script src="js/intro.js"></script>
 </body>
 </html>
