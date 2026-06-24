@@ -351,7 +351,7 @@ class Watch extends Enemy {
         super(x, y, r, s, hp, maxhp, 180, 18);
         this.timer = 0;
         this.mass = 6;
-        this.delay = parseInt(600 + 300 * Math.random());
+        this.delay = parseInt(520 + 300 * Math.random());
         //this.delay = 500;
         this.nextShot = 5;
         this.volleyShots = 0;
