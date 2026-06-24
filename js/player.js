@@ -58,7 +58,7 @@ class Player {
 
         setTimeout(() => {
           window.location.href = "game over.html";
-        }, 3000);
+        }, 2000);
         //throw new Error("Game Over");
       }
 

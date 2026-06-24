@@ -397,8 +397,8 @@ class Watch extends Enemy {
       this.y += Math.sin(a)*this.speed;
 
       super.tick(t);
-      if (this.timer % (this.delay-80) == 0) {
-          lc.push(new shotCharge(this, 40));
+      if (this.timer % (this.delay-120) == 0) {
+          lc.push(new shotCharge(this, 50));
       }
       if (this.timer % this.delay == 0) {
           this.shotsLeft = 5;
@@ -531,11 +531,11 @@ class Ring extends Enemy {
         this.dashCooldownTimer = 180;
 
         this.lockTimer = 0;
-        this.lockTime = 60;
+        this.lockTime = 100;
 
         this.dashTimer = 0;
         this.dashTime = 25;
-        this.dashSpeed = 7;
+        this.dashSpeed = 8;
         this.dashAngle = 0;
 
         this.recoverTimer = 0;
@@ -625,7 +625,7 @@ class Ring extends Enemy {
     }
 
     else if (this.state === "lock") {
-      this.turnSpeed = 0.018;
+      this.turnSpeed = 0.019;
         this.lockTimer--;
 
     drawIndicator(
@@ -1035,7 +1035,7 @@ class shotCharge extends laserCharge {
           this.disable = true;
           return;
         }
-        this._r = this.r * 4 * Math.exp(-0.03 * this.timer);
+        this._r = this.r * 4 * Math.exp(-0.025 * this.timer);
 
         const orbX = sx(this.laserCharge.x);
         const orbY = sy(this.laserCharge.y);
