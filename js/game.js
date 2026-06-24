@@ -28,7 +28,7 @@ podImg.src = "5-RE_1-removebg-preview.png"
 const waveText = document.getElementById("waveText");
 
 function showWaveText(num) {
-  waveText.textContent = "WAVE" + num;
+  waveText.textContent = "WAVE " + num;
 {}
   waveText.classList.remove("waveAnim");
   void waveText.offsetWidth; //remove animation
