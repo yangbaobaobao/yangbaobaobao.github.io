@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #111;
+}
+canvas {
+  display: block;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  margin-top: -8%;
+  animation: fadeIn 4s ease-in forwards;
+  transform: scale(120%, 120%); 
+  position: relative;
+  z-index: 0;
+}
+
+.deathText {
+  color: red;
+  display: block;
+  text-align: center;
+  animation: dropIn 1s ease-out forwards;
+  transform: translate(0, -90px) scale(600%, 600%); 
+  position: relative;
+  z-index: 100;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dropIn {
+  from {
+    transform: translate(0, -300px) scale(600%, 600%);
+  }
+  to {
+    transform: translate(0, -90px) scale(600%, 600%);
+  }
+}
