@@ -349,7 +349,7 @@ class Enemy {
 class Watch extends Enemy {
     constructor(x, y, r, s, hp, maxhp) {
         super(x, y, r, s, hp, maxhp, 180, 18);
-        this.timer = 0;
+        this.timer = 200;
         this.mass = 6;
         this.delay = parseInt(520 + 300 * Math.random());
         //this.delay = 500;
@@ -625,7 +625,7 @@ class Ring extends Enemy {
     }
 
     else if (this.state === "lock") {
-      this.turnSpeed = 0.0175;
+      this.turnSpeed = 0.01;
         this.lockTimer--;
 
     drawIndicator(

@@ -62,15 +62,15 @@ class Player {
         //throw new Error("Game Over");
       }
 
-      if (keys["h"] && this.hpHeal < this.maxHp)
-          this.hpHeal+=8.3;
+      if (keys[keybinds.heal] && this.hpHeal < this.maxHp)
+          this.hpHeal+=8.35;
       if (this.hpHeal > 0) {
         this.hpHeal-=8;
         this.hpHeal = Math.max(this.hpHeal, 0);
       }
 
       if (this.hpHeal >= this.maxHp){
-        this.hp += 60;
+        this.hp += 70;
         this.hp = Math.min(this.hp, this.maxHp);
         this.hpHeal = 0;
       }
@@ -78,8 +78,8 @@ class Player {
 
     spinHitEnemies() {
       const spinRadius = 180;
-      const spinDamage = Math.abs(this.angularVelocity) * 90;
-      const knockbackPower = Math.abs(this.angularVelocity) * 70;
+      const spinDamage = Math.abs(this.angularVelocity) * 120;
+      const knockbackPower = Math.abs(this.angularVelocity) * 90;
 
       for (const enemy of enemies) {
         if (!enemy.playerSpinHitTimer) enemy.playerSpinHitTimer = 0;

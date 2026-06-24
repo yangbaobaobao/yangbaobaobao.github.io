@@ -25,7 +25,6 @@ ringImg.src = "SmartRingCOLMIR02Gold1-removebg-preview.png";
 const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png"
 
-var healKey = "h";
 
 let lc = [];
 let enemies = [];
@@ -39,6 +38,24 @@ let invert = 0;
 let timeMalTimer = 0;
 let timeCooldown = 0;
 let invertTarget = 0;
+let waveIndex = 0;
+let waveCooldown = 0;
+let waveTimer = 0;
+let currentWaveHpPool = 0;
+let currentWaveTriggered = false;
+
+const keybinds = JSON.parse(localStorage.getItem("keybinds")) || {
+  heal: "h",
+  dash: "shift", // not yet implimented
+  time: "p",
+  up: "w",
+  down: "s",
+  left: "a",
+  right: "d",
+  recall: " "
+};
+
+const timePerWave = 3000;
 
 const mouse = { x: 0, y: 0, down: false, holdTime: 0 };
 
@@ -155,7 +172,7 @@ if (false){
   }
 }
 
-if (true){
+if (false){
   //enemies.push(new Apple(300, 300, 160, 0.7, 1600, 1600));
   enemies.push(new Ring(300, 300, 140, 3, 1000, 1000));
   enemies.push(new Ring(300, -300, 140, 3, 1000, 1000));
@@ -202,12 +219,154 @@ if (false){
   }
 }
 
+const waves = [
+  { pattern: "circle", type: "Watch", count: 8 },
+  { pattern: "corners", type: "Ring", count: 2 },
+  { pattern: "spiral", type: "AirPod", count: 50 },
+  { pattern: "line", type: "Watch", count: 14 },
+  { pattern: "bossApple", type: "Apple", count: 1 },
+  { pattern: "mixedCircle", count: 14 },
+  { pattern: "bossHuawei", type: "Huawei", count: 1 },
+  { pattern: "mixedCircle", count: 10 }
+];
+
+function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
+  const spawnDist = world.radius + distanceOutside;
+
+  const x = Math.cos(angle) * spawnDist;
+  const y = Math.sin(angle) * spawnDist;
+
+  let enemy;
+
+  if (type === "Watch") enemy = new Watch(x, y, 70, 1.2, 500, 500);
+  if (type === "Ring") enemy = new Ring(x, y, 140, 3, 1000, 1000);
+  if (type === "AirPod") enemy = new AirPod(x, y, 50, 1.6, 200, 200);
+  if (type === "Apple") enemy = new Apple(x, y, 160, 0.7, 1600, 1600);
+  if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 1600, 1600);
+
+  enemies.push(enemy);
+  flingIntoWorld(enemy, 0, 0, force);
+}
+
+function flingIntoWorld(enemy, targetX = player.x, targetY = player.y, force = 25) {
+  const a = Math.atan2(targetY - enemy.y, targetX - enemy.x);
+
+  enemy.vx = Math.cos(a) * force;
+  enemy.vy = Math.sin(a) * force;
+
+  enemy.crashInvulnerbility = 30;
+}
+
+function spawnWave(wave) {
+  console.log("Wave:", waveIndex, wave.pattern);
+
+  currentWaveHpPool = 0;
+  currentWaveTriggered = false;
+  waveTimer = 0;
+
+  if (wave.pattern === "corners") {
+    const d = 900;
+    spawnEnemy(wave.type, d, d);
+    spawnEnemy(wave.type, d, -d);
+    spawnEnemy(wave.type, -d, d);
+    spawnEnemy(wave.type, -d, -d);
+  }
+
+  if (wave.pattern === "circle") {
+    for (let i = 0; i < wave.count; i++) {
+      const a = i / wave.count * Math.PI * 2;
+      spawnEnemy(wave.type, a, 900, 35);
+    }
+  }
+
+  if (wave.pattern === "spiral") {
+    for (let i = 0; i < wave.count; i++) {
+      const a = i * 0.6;
+      const r = 500 + i * 35;
+      spawnEnemy(wave.type, Math.cos(a) * r, Math.sin(a) * r);
+    }
+  }
+
+  if (wave.pattern === "line") {
+    for (let i = 0; i < wave.count; i++) {
+      const x = -700 + i * 150;
+      spawnEnemy(wave.type, x, -1000);
+    }
+  }
+
+  if (wave.pattern === "bossApple") {
+    spawnEnemy("Apple", 0, -1000);
+  }
+
+  if (wave.pattern === "bossHuawei") {
+    spawnEnemy("Huawei", 0, -1000);
+  }
+
+  if (wave.pattern === "mixedCircle") {
+    for (let i = 0; i < wave.count; i++) {
+      const a = i / wave.count * Math.PI * 2;
+      const type = i % 3 === 0 ? "Ring" : i % 3 === 1 ? "Watch" : "AirPod";
+      spawnEnemy(type, Math.cos(a) * world.radius, Math.sin(a) * world.radius);
+    }
+  }
+  for (const e of enemies) {
+    currentWaveHpPool += e.hp;
+  }
+}
+
+function getCurrentEnemyHpPool() {
+  let total = 0;
+
+  for (const e of enemies) {
+    if (!e.dead) total += Math.max(e.hp, 0);
+  }
+
+  return total;
+}
+
+function updateWaves() {
+  if (waveCooldown > 0) {
+    waveCooldown--;
+    return;
+  }
+
+  if (enemies.length === 0) {
+    startNextWave();
+    return;
+  }
+
+  waveTimer++;
+
+  const currentHp = getCurrentEnemyHpPool();
+  const hpLost = currentWaveHpPool - currentHp;
+  const halfHpLost = hpLost >= currentWaveHpPool * 0.8;
+  const timePassed = waveTimer >= timePerWave;
+
+  if (!currentWaveTriggered && (halfHpLost || timePassed)) {
+    currentWaveTriggered = true;
+    startNextWave();
+  }
+}
+
+function startNextWave() {
+  const wave = waves[waveIndex];
+
+  spawnWave(wave);
+
+  waveIndex++;
+
+  if (waveIndex >= waves.length) {
+    waveIndex = 0;
+  }
+
+  waveCooldown = 120;
+}
 
 const keys = {};
 addEventListener("keydown", e => {
   keys[e.key.toLowerCase()] = true;
 
-  if (e.code === "Space") {
+  if (keys[keybinds.recall]) {
     hammer.recall();
   }
 });
@@ -247,7 +406,7 @@ function keepInside(obj){
 
 function enemyEnemyBounce() {
   const minBounceSpeed = 5;
-  const damageMultiplier = 1.85;
+  const damageMultiplier = 2.1;
 
   for (let i = 0; i < enemies.length; i++) {
     for (let j = i + 1; j < enemies.length; j++) {
@@ -347,7 +506,7 @@ function update(){
     timeMalTimer = 0;
     invertTarget = 0;
   }
-  if (timeCooldown <= 0 && keys["p"] && pNotPressed)
+  if (timeCooldown <= 0 && keys[keybinds.time] && pNotPressed)
   {
     timeCooldown = 600;
     timeMalTimer = 200;
@@ -355,14 +514,14 @@ function update(){
     pNotPressed = false;
   }
   //print(timeCooldown);
-  if (timeCooldown > 0 && keys["p"] && pNotPressed)
+  if (timeCooldown > 0 && keys[keybinds.time] && pNotPressed)
   {
     timeCooldown = 80;
     invertTarget = 0;
     timeMalTimer = 0;
     pNotPressed = false;
   }
-  if (!keys["p"])
+  if (!keys[keybinds.time])
     pNotPressed = true;
   if (player.invincibleTimer > 0) {
     player.invincibleTimer--;
@@ -370,10 +529,10 @@ function update(){
   invert += (invertTarget - invert) * 0.1;
   let dx=0, dy=0;
 
-  if(keys["w"]) dy-=2;
-  if(keys["s"]) dy+=2;
-  if(keys["a"]) dx-=2;
-  if(keys["d"]) dx+=2;
+  if(keys[keybinds.up]) dy-=2;
+  if(keys[keybinds.down]) dy+=2;
+  if(keys[keybinds.left]) dx-=2;
+  if(keys[keybinds.right]) dx+=2;
 
   if(dx || dy){
     const l = Math.hypot(dx,dy);
@@ -471,6 +630,8 @@ for (let i=0; i<bullets.length; i++) {
     }
   }
 
+  updateWaves();
+
     //lc.forEach((element) => element.tick());
 
     // player circle
@@ -482,9 +643,9 @@ for (let i=0; i<bullets.length; i++) {
 }
 
 function loop(){
-    if (!freezeGlitch.active) {
-  update();
-  draw();
+  if (!freezeGlitch.active) {
+    update();
+    draw();
   } else {
     drawFreezeGlitch();
     freezeGlitch.timer--;

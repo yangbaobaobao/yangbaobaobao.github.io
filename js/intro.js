@@ -132,4 +132,60 @@ function cycleDifficulty() {
   }
 }
 
+const keybinds = JSON.parse(localStorage.getItem("keybinds")) || {
+  heal: "h",
+  dash: "shift",
+  time: "p",
+  up: "w",
+  down: "s",
+  left: "a",
+  right: "d",
+  recall: " "
+};
+
+let hoveredKeybind = null;
+
+function displayKey(key) {
+  if (key === " ") return "SPACE";
+  return key.toUpperCase();
+}
+
+function updateKeybindButtons() {
+  document.querySelectorAll(".keybind-button").forEach(button => {
+    const action = button.dataset.action;
+    button.textContent = `${action.toUpperCase()}: ${displayKey(keybinds[action])}`;
+  });
+}
+
+document.querySelectorAll(".keybind-button").forEach(button => {
+  button.addEventListener("mouseenter", () => {
+    hoveredKeybind = button.dataset.action;
+    button.textContent = `${hoveredKeybind.toUpperCase()}: PRESS KEY`;
+  });
+
+  button.addEventListener("mouseleave", () => {
+    hoveredKeybind = null;
+    updateKeybindButtons();
+  });
+});
+
+addEventListener("keydown", e => {
+  if (!hoveredKeybind) return;
+
+  e.preventDefault();
+
+  let key = e.key.toLowerCase();
+
+  if (e.code === "Space") {
+    key = " ";
+  }
+
+  keybinds[hoveredKeybind] = key;
+  localStorage.setItem("keybinds", JSON.stringify(keybinds));
+
+  updateKeybindButtons();
+});
+
+updateKeybindButtons();
+
 loop();
