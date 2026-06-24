@@ -581,13 +581,6 @@ class Ring extends Enemy {
         ctx.rotate(this.angle);
         ctx.globalAlpha = 1;
 
-        ctx.drawImage(
-            ringImg,
-            -this.size / 2,
-            -this.size / 2,
-            this.size,
-            this.size
-        );
       ctx.restore();
 
       if (this.state === "orbit") {
