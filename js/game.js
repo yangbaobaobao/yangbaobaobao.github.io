@@ -25,6 +25,16 @@ ringImg.src = "SmartRingCOLMIR02Gold1-removebg-preview.png";
 const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png"
 
+const waveText = document.getElementById("waveText");
+
+function showWaveText(num) {
+  waveText.textContent = "WAVE" + num;
+{}
+  waveText.classList.remove("waveAnim");
+  void waveText.offsetWidth; //remove animation
+  waveText.classList.add("waveAnim");
+}
+
 
 let lc = [];
 let enemies = [];
@@ -349,6 +359,10 @@ function updateWaves() {
 }
 
 function startNextWave() {
+  const displayWave = waveIndex + 1;
+
+  showWaveText(displayWave);
+
   const wave = waves[waveIndex];
 
   spawnWave(wave);
