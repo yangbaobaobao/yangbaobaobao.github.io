@@ -65,6 +65,18 @@ canvas {
   }
 }
 
+#difficultyText {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  font-size: 80px;
+  font-weight: bold;
+  color: cyan;
+  text-shadow: 0 0 20px cyan;
+  pointer-events: none;
+  opacity: 0;
+}
+
 #waveText {
   position: fixed;
   top: 100px;

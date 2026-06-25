@@ -26,6 +26,7 @@ const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png"
 
 const waveText = document.getElementById("waveText");
+const difficulty = localStorage.getItem("difficulty") || "normal";
 
 function showWaveText(num) {
   waveText.textContent = "WAVE " + num;
@@ -34,7 +35,7 @@ function showWaveText(num) {
   void waveText.offsetWidth; //remove animation
   waveText.classList.add("waveAnim");
 }
-
+console.log(difficulty);
 
 let lc = [];
 let enemies = [];
@@ -234,7 +235,8 @@ const waves = [
   { pattern: "corners", type: "Ring", count: 2 },
   { pattern: "spiral", type: "AirPod", count: 50 },
   { pattern: "line", type: "Watch", count: 14 },
-  { pattern: "bossApple", type: "Apple", count: 1 },
+  { pattern: "mixedCircle", count: 8 },
+  { pattern: "bossApple", type: "Apple", count: 12 },
   { pattern: "mixedCircle", count: 14 },
   { pattern: "bossHuawei", type: "Huawei", count: 1 },
   { pattern: "mixedCircle", count: 10 }
@@ -306,6 +308,10 @@ function spawnWave(wave) {
 
   if (wave.pattern === "bossApple") {
     spawnEnemy("Apple", 0, -1000);
+    for (let i = 0; i < wave.count; i++) {
+      const a = i / wave.count * Math.PI * 2;
+      spawnEnemy("Watch", a, 900, 35);
+    }
   }
 
   if (wave.pattern === "bossHuawei") {
@@ -349,7 +355,17 @@ function updateWaves() {
 
   const currentHp = getCurrentEnemyHpPool();
   const hpLost = currentWaveHpPool - currentHp;
-  const halfHpLost = hpLost >= currentWaveHpPool * 0.765;
+  var nextWaveRatio;
+  if (difficulty == "easy")
+    nextWaveRatio = 0.8;
+  if (difficulty == "normal")
+    nextWaveRatio = 0.770;
+  if (difficulty == "hard")
+    nextWaveRatio = 0.750;
+  if (difficulty == "impossible")
+    nextWaveRatio = 0.740;
+  
+  const halfHpLost = hpLost >= currentWaveHpPool * nextWaveRatio;
   const timePassed = waveTimer >= timePerWave;
 
   if (!currentWaveTriggered && (halfHpLost || timePassed)) {

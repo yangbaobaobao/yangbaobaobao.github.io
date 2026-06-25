@@ -205,6 +205,22 @@ class Bullet {
     this.damage = damage;
     this.radius = radius;
     this.dead = false;
+
+    if (difficulty == "easy"){
+      this.damage /= 1.75;
+      this.speed /= 1.4;
+      console.log("gaba");
+    }
+    if (difficulty == "normal") {
+      this.damage /= 1.25;
+      this.speed /= 1.1;
+    }
+    if (difficulty == "hard")
+      this.speed *= 1.1875;
+    if (difficulty == "impossible"){
+      this.damage *= 1.2;
+      this.speed *= 1;
+    }
   }
 
   render() {
@@ -361,6 +377,8 @@ class Watch extends Enemy {
         this.facing2 = false;
         this.shotsPerVolley = 5;
         this.spreadAngle = 1; // total fan width in radians
+        if (difficulty == "impossible")
+          this.delay = parseInt(this.delay / 1.3);
     }
 
     render() {
@@ -432,7 +450,7 @@ if (this.shotsLeft > 0 && this.nextShotTimer == 0) {
             this.x,
             this.y,
             angle + offset,
-            19,
+            16,
             18,
             16
         )
@@ -544,6 +562,22 @@ class Ring extends Enemy {
         this.touchCooldown = 0;
         this.touchDamage = 22 * (r/50);
         this.knockbackPower = 45;
+
+        if (difficulty == "easy"){
+          this.lockTime *= 1.8;
+          this.dashSpeed /= 1.4;
+          this.touchDamage /= 1.4;
+        }
+        if (difficulty == "normal"){
+          this.lockTime *= 1.2;
+          this.dashSpeed /= 1.2;
+          this.touchDamage /= 1;
+        }
+         if (difficulty == "impossible"){
+          this.lockTime *= 0.9;
+          this.dashSpeed /= 1;
+          this.touchDamage /= 1;
+        }
     }
 
     render() {
@@ -902,6 +936,13 @@ class Apple extends Enemy {
         this.shockAngle = Math.PI / 1.8;
         this.shockDamage = 90;
         this.shockKnockback = 225;
+
+        if (difficulty == "easy")
+          this.chargeTime = 180;
+        if (difficulty == "hard")
+          this.chargeTime = 110;
+        if (difficulty == "impossible")
+          this.chargeTime = 80;
     }
 
     render() {

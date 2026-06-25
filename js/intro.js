@@ -88,33 +88,19 @@ const difficulties = [
 
 let difficultyIndex = 0;
 
-function cycleDifficulty() {
-  difficultyIndex++;
+const savedDifficulty = localStorage.getItem("difficulty");
 
-  if (difficultyIndex >= difficulties.length) {
-    difficultyIndex = 0;
+if (savedDifficulty) {
+  const savedIndex = difficulties.findIndex(d => d.value === savedDifficulty);
+
+  if (savedIndex !== -1) {
+    difficultyIndex = savedIndex;
   }
-
-  document.getElementById("difficultyButton").textContent =
-    difficulties[difficultyIndex].name;
 }
 
-function startGame() {
-  localStorage.setItem(
-    "difficulty",
-    difficulties[difficultyIndex].value
-  );
-
-  window.location.href = "game.html";
-}
-function cycleDifficulty() {
-  difficultyIndex =
-    (difficultyIndex + 1) % difficulties.length;
-
+function updateDifficultyButton() {
   const btn = document.getElementById("difficultyButton");
-
-  btn.textContent =
-    difficulties[difficultyIndex].name;
+  btn.textContent = difficulties[difficultyIndex].name;
 
   switch (difficultyIndex) {
     case 0:
@@ -131,6 +117,21 @@ function cycleDifficulty() {
       break;
   }
 }
+
+function cycleDifficulty() {
+  difficultyIndex = (difficultyIndex + 1) % difficulties.length;
+
+  localStorage.setItem("difficulty", difficulties[difficultyIndex].value);
+
+  updateDifficultyButton();
+}
+
+function startGame() {
+  localStorage.setItem("difficulty", difficulties[difficultyIndex].value);
+  window.location.href = "game.html";
+}
+
+updateDifficultyButton();
 
 const keybinds = JSON.parse(localStorage.getItem("keybinds")) || {
   heal: "h",
@@ -187,5 +188,5 @@ addEventListener("keydown", e => {
 });
 
 updateKeybindButtons();
-
+localStorage.setItem("difficulty", difficulties[difficultyIndex].value);
 loop();
