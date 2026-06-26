@@ -100,7 +100,8 @@ label {
 .keybind-grid {
   display: grid;
   grid-template-columns: repeat(2, 180px);
-  gap: 8px;
+  column-gap: 8px;
+  row-gap: 2px;
   justify-content: center;
 }
 
