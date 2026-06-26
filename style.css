@@ -79,7 +79,7 @@ canvas {
 
 #waveText {
   position: fixed;
-  top: 100px;
+  top: 80px;
   left: 50%;
   font-size: 80px;
   font-weight: bold;
@@ -89,8 +89,26 @@ canvas {
   opacity: 0;
 }
 
+#tutorialText {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  font-size: 50px;
+  font-weight: bold;
+  color: cyan;
+  text-shadow: 0 0 10px cyan;
+  pointer-events: none;
+  opacity: 0;
+  text-align: center;
+}
+
+
 .waveAnim {
   animation: waveDrop 1.85s ease-out;
+}
+
+.tutAnim {
+  animation: waveDrop 4s ease-out;
 }
 
 @keyframes waveDrop {

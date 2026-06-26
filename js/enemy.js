@@ -560,7 +560,7 @@ class Ring extends Enemy {
         this.recoverTime = 65;
 
         this.touchCooldown = 0;
-        this.touchDamage = 22 * (r/50);
+        this.touchDamage = 19 * (r/50);
         this.knockbackPower = 45;
 
         if (difficulty == "easy"){

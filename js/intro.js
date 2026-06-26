@@ -131,6 +131,11 @@ function startGame() {
   window.location.href = "game.html";
 }
 
+function startTutorial() {
+  localStorage.setItem("difficulty", "tutorial");
+  window.location.href = "game.html";
+}
+
 updateDifficultyButton();
 
 const keybinds = JSON.parse(localStorage.getItem("keybinds")) || {

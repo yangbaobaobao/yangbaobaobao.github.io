@@ -26,6 +26,7 @@ const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png"
 
 const waveText = document.getElementById("waveText");
+const tutorialText = document.getElementById("tutorialText");
 const difficulty = localStorage.getItem("difficulty") || "normal";
 
 function showWaveText(num) {
@@ -34,6 +35,14 @@ function showWaveText(num) {
   waveText.classList.remove("waveAnim");
   void waveText.offsetWidth; //remove animation
   waveText.classList.add("waveAnim");
+}
+
+function showTutorialText(num) {
+  tutorialText.textContent = num;
+{}
+  tutorialText.classList.remove("tutAnim");
+  void tutorialText.offsetWidth; //remove animation
+  tutorialText.classList.add("tutAnim");
 }
 console.log(difficulty);
 
@@ -238,9 +247,17 @@ const waves = [
   { pattern: "mixedCircle", count: 8 },
   { pattern: "bossApple", type: "Apple", count: 12 },
   { pattern: "mixedCircle", count: 14 },
+  { pattern: "spiral", type: "AirPod", count: 10 },
+  { pattern: "circle", type: "Apple", count: 3 },
+  { pattern: "mixedCircle", count: 14 },
   { pattern: "bossHuawei", type: "Huawei", count: 1 },
   { pattern: "mixedCircle", count: 10 }
 ];
+
+if (difficulty === "tutorial"){
+    //showWaveText("TUTORIAL");
+    showTutorialText("Click and HOLD in the direction you want to throw your axe")
+}
 
 function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
   const spawnDist = world.radius + distanceOutside;
@@ -377,7 +394,8 @@ function updateWaves() {
 function startNextWave() {
   const displayWave = waveIndex + 1;
 
-  showWaveText(displayWave);
+  if (difficulty != "tutorial")
+    showWaveText(displayWave);
 
   const wave = waves[waveIndex];
 
