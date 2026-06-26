@@ -107,8 +107,45 @@ canvas {
   animation: waveDrop 1.85s ease-out;
 }
 
-.tutAnim {
-  animation: waveDrop 4s ease-out;
+.tutAnimIn {
+  animation: waveIn 4s ease-out;
+}
+.tutAnimOut {
+  animation: waveOut 1s ease-out;
+}
+
+@keyframes waveIn {
+  0% {
+    transform: translate(-50%, -80px);
+    opacity: 0;
+  }
+
+  20% {
+    transform: translate(-50%, -40);
+    opacity: 1;
+  }
+
+  70% {
+    transform: translate(-50%, -40);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -40px);
+    opacity: 1;
+  }
+}
+
+@keyframes waveOut {
+  0% {
+    transform: translate(-50%, -40px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, 0px);
+    opacity: 0;
+  }
 }
 
 @keyframes waveDrop {

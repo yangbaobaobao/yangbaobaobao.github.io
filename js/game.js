@@ -40,9 +40,9 @@ function showWaveText(num) {
 function showTutorialText(num) {
   tutorialText.textContent = num;
 {}
-  tutorialText.classList.remove("tutAnim");
+  tutorialText.classList.remove("tutAnimIn");
   void tutorialText.offsetWidth; //remove animation
-  tutorialText.classList.add("tutAnim");
+  tutorialText.classList.add("tutAnimIn");
 }
 console.log(difficulty);
 

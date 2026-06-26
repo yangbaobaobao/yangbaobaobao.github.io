@@ -39,6 +39,10 @@ canvas {
   margin-bottom: 40px;
 }
 
+.small {
+  transform: scale(0.725);
+}
+
 button {
   display: block;
   margin: 15px auto;
