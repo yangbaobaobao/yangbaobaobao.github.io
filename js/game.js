@@ -254,9 +254,131 @@ const waves = [
   { pattern: "mixedCircle", count: 10 }
 ];
 
-if (difficulty === "tutorial"){
-    //showWaveText("TUTORIAL");
-    showTutorialText("Click and HOLD in the direction you want to throw your axe")
+let tutorialStep = 0;
+let tutorialTimer = 0;
+let tutorialMarker = null;
+let tutorialEnemy = null;
+let tutorialStarted = false;
+let tutorialDone = false;
+let oldHp = player.hp;
+
+function startTutorial() {
+  tutorialStarted = true;
+  enemies = [];
+  bullets = [];
+  waveIndex = 0;
+
+  tutorialStep = 0;
+  nextTutorialStep();
+}
+
+function nextTutorialStep() {
+  tutorialStep++;
+  tutorialTimer = 0;
+  tutorialMarker = null;
+  tutorialEnemy = null;
+
+  if (tutorialStep === 1) {
+    showTutorialText("WASD TO MOVE");
+    tutorialMarker = { x: 350, y: 0, radius: 45 };
+  }
+
+  if (tutorialStep === 2) {
+    showTutorialText("CLICK TO ATTACK, AIM USING MOUSE");
+    tutorialEnemy = new AirPod(player.x + 180, player.y, 50, 0, 120, 120);
+    enemies.push(tutorialEnemy);
+  }
+
+  if (tutorialStep === 3) {
+    showTutorialText("HOLD CLICK AND AIM USING MOUSE, RELEASE TO THROW");
+    tutorialEnemy = new Watch(player.x + 550, player.y, 70, 0, 300, 300);
+    enemies.push(tutorialEnemy);
+  }
+
+  if (tutorialStep === 4) {
+    showTutorialText("PRESS SPACE TO RECALL HAMMER");
+  }
+
+  if (tutorialStep === 5) {
+    showTutorialText("PRESS P FOR TIME STOP");
+    enemies.push(new AirPod(player.x + 300, player.y + 100, 50, 1.2, 200, 200));
+    enemies.push(new AirPod(player.x - 300, player.y - 100, 50, 1.2, 200, 200));
+  }
+
+  if (tutorialStep === 6) {
+    showTutorialText("HOLD H UNTIL THE BAR IN THE HEALTHBAR FILLS UP TO HEAL");
+    player.hp = Math.min(player.hp, 50);
+    oldHp = player.hp;
+  }
+
+  if (tutorialStep === 7) {
+    showTutorialText("SURVIVE THE FINAL TEST");
+    enemies.push(new Watch(player.x + 500, player.y, 70, 1.2, 500, 500));
+    enemies.push(new Ring(player.x - 500, player.y, 140, 3, 800, 800));
+    enemies.push(new AirPod(player.x, player.y + 500, 50, 1.6, 200, 200));
+  }
+
+  if (tutorialStep === 8) {
+    showTutorialText("TUTORIAL COMPLETE");
+    tutorialDone = true;
+
+    //setTimeout(() => { localStorage.setItem("difficulty", "normal"); location.reload();}, 2000);
+    setTimeout(() => { window.location.href = "index.html"}, 2000);
+  }
+}
+
+function updateTutorial() {
+  if (difficulty !== "tutorial") return;
+  if (tutorialDone) return;
+
+  if (!tutorialStarted) {
+    startTutorial();
+    return;
+  }
+
+  tutorialTimer++;
+
+  if (tutorialStep === 1) {
+    if (tutorialMarker && dist(player.x, player.y, tutorialMarker.x, tutorialMarker.y) < 60) {
+      nextTutorialStep();
+    }
+  }
+
+  if (tutorialStep === 2) {
+    if (!tutorialEnemy || tutorialEnemy.dead || tutorialEnemy.hp <= 0) {
+      nextTutorialStep();
+    }
+  }
+
+  if (tutorialStep === 3) {
+    if (hammer.state === "thrown") {
+      nextTutorialStep();
+    }
+  }
+
+  if (tutorialStep === 4) {
+    if (hammer.state === "held") {
+      nextTutorialStep();
+    }
+  }
+
+  if (tutorialStep === 5) {
+    if (timeMalTimer == 1) {
+      nextTutorialStep();
+    }
+  }
+
+  if (tutorialStep === 6) {
+    if (player.hp > oldHp || tutorialTimer > 800) {
+      nextTutorialStep();
+    }
+  }
+
+  if (tutorialStep === 7) {
+    if (enemies.length === 0) {
+      nextTutorialStep();
+    }
+  }
 }
 
 function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
@@ -678,7 +800,11 @@ for (let i=0; i<bullets.length; i++) {
     }
   }
 
-  updateWaves();
+  if (difficulty === "tutorial") {
+    updateTutorial();
+  } else {
+    updateWaves();
+  }
 
     //lc.forEach((element) => element.tick());
 
@@ -687,6 +813,16 @@ for (let i=0; i<bullets.length; i++) {
   ctx.arc(sx(player.x), sy(player.y), player.radius, 0, Math.PI*2);
   ctx.fillStyle = "cyan";
   ctx.fill();
+  if (tutorialMarker) {
+  ctx.beginPath();
+  ctx.arc(sx(tutorialMarker.x), sy(tutorialMarker.y), tutorialMarker.radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "cyan";
+  ctx.lineWidth = 5;
+  ctx.shadowColor = "cyan";
+  ctx.shadowBlur = 20;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
   updateCameraShake();
 }
 

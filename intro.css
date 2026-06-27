@@ -43,6 +43,13 @@ canvas {
   transform: scale(0.725);
 }
 
+.small:hover {
+  color: red;
+  border-color: red;
+  box-shadow: 0 0 25px red;
+  transform: scale(0.9);
+}
+
 button {
   display: block;
   margin: 15px auto;
