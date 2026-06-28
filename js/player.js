@@ -30,7 +30,7 @@ class Player {
 
       // healthbar
 
-      const uiScale = Math.min(canvas.width / 1920, canvas.height / 1080)*1.1;
+      const uiScale = Math.min(canvas.width / 1920, canvas.height / 1080)*1.15;
       const bw = 400 * uiScale;
       const bh = 40 * uiScale;
       const bx = canvas.width / 2 - 620 * uiScale - bw / 2;

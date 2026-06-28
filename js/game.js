@@ -31,8 +31,8 @@ const difficultyText = document.getElementById("difficultyText");
 const tutorialText = document.getElementById("tutorialText");
 const difficulty = localStorage.getItem("difficulty") || "normal";
 var dismissed = localStorage.getItem("dismissed") || false;
-if (!dismissed) {
-  showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" not remind in the future)");
+if (dismissed != "true") {
+  showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" to dismiss forever)");
 }
 
 function showNoticeText(num) {
@@ -841,8 +841,8 @@ for (let i=0; i<bullets.length; i++) {
 }
 
 function loop(){
-  if (keys["n"]) localStorage.setItem("dismissed", true);
-  if (keys["="]) localStorage.setItem("dismissed", false);
+  if (keys["n"]) localStorage.setItem("dismissed", "true");
+  if (keys["/"]) localStorage.setItem("dismissed", "false");
   if (!freezeGlitch.active) {
     update();
     draw();

@@ -378,7 +378,7 @@ class Watch extends Enemy {
         this.shotsPerVolley = 5;
         this.spreadAngle = 1; // total fan width in radians
         if (difficulty == "impossible")
-          this.delay = parseInt(this.delay / 1.3);
+          this.delay = parseInt(this.delay / 1.5);
     }
 
     render() {
@@ -575,7 +575,7 @@ class Ring extends Enemy {
         }
          if (difficulty == "impossible"){
           this.lockTime *= 0.9;
-          this.dashSpeed /= 1;
+          this.dashSpeed *= 1.1;
           this.touchDamage /= 1;
         }
     }

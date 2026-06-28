@@ -93,10 +93,10 @@ canvas {
   position: fixed;
   top: 100px;
   left: 50%;
-  font-size: 22px;
+  font-size: 22.5px;
   font-weight: bold;
   color: rgb(255, 0, 0);
-  text-shadow: 0 0 20px rgb(255, 0, 0);
+  text-shadow: 0 0 20px rgb(0, 242, 255);
   pointer-events: none;
   opacity: 0;
   text-align: center;
