@@ -415,7 +415,7 @@ class Watch extends Enemy {
       this.y += Math.sin(a)*this.speed;
 
       super.tick(t);
-      if (this.timer % (this.delay-120) == 0) {
+      if (this.timer % (this.delay-100) == 0) {
           lc.push(new shotCharge(this, 50));
       }
       if (this.timer % this.delay == 0) {
@@ -565,7 +565,7 @@ class Ring extends Enemy {
 
         if (difficulty == "easy"){
           this.lockTime *= 1.8;
-          this.dashSpeed /= 1.4;
+          this.dashSpeed /= 1.75;
           this.touchDamage /= 1.4;
         }
         if (difficulty == "normal"){

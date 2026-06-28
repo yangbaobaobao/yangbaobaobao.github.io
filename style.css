@@ -89,6 +89,19 @@ canvas {
   opacity: 0;
 }
 
+#noticeText {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  color: rgb(255, 0, 0);
+  text-shadow: 0 0 20px rgb(255, 0, 0);
+  pointer-events: none;
+  opacity: 0;
+  text-align: center;
+}
+
 #tutorialText {
   position: fixed;
   top: 100px;

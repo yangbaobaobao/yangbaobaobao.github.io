@@ -29,10 +29,12 @@ class Player {
       this.spinHitEnemies();
 
       // healthbar
-      const bw = 400;
-      const bh = 40;
-      const bx = canvas.width / 2 - 620 - bw / 2;
-      const by = canvas.height / 2 - 380 - this.radius - 40;
+
+      const uiScale = Math.min(canvas.width / 1920, canvas.height / 1080)*1.1;
+      const bw = 400 * uiScale;
+      const bh = 40 * uiScale;
+      const bx = canvas.width / 2 - 620 * uiScale - bw / 2;
+      const by = canvas.height / 2 - 380 * uiScale - this.radius - 40;
       this.displayHp1 += (this.hp - this.displayHp1) * 0.2;
       this.displayHp2 += (this.hp - this.displayHp2) * 0.05;
       this.displayHp3 += (this.hpHeal - this.displayHp3) * 0.08;

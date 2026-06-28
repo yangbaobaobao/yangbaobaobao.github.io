@@ -26,8 +26,22 @@ const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png"
 
 const waveText = document.getElementById("waveText");
+const noticeText = document.getElementById("noticeText");
+const difficultyText = document.getElementById("difficultyText");
 const tutorialText = document.getElementById("tutorialText");
 const difficulty = localStorage.getItem("difficulty") || "normal";
+var dismissed = localStorage.getItem("dismissed") || false;
+if (!dismissed) {
+  showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" not remind in the future)");
+}
+
+function showNoticeText(num) {
+  noticeText.textContent = num;
+{}
+  noticeText.classList.remove("tutAnimIn");
+  void noticeText.offsetWidth; //remove animation
+  noticeText.classList.add("tutAnimIn");
+}
 
 function showWaveText(num) {
   waveText.textContent = "WAVE " + num;
@@ -827,6 +841,8 @@ for (let i=0; i<bullets.length; i++) {
 }
 
 function loop(){
+  if (keys["n"]) localStorage.setItem("dismissed", true);
+  if (keys["="]) localStorage.setItem("dismissed", false);
   if (!freezeGlitch.active) {
     update();
     draw();
