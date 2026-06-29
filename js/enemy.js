@@ -1076,7 +1076,7 @@ class cleanerBot extends Enemy {
             player.y - this.y,
             player.x - this.x
         );
-        this.turnSpeed = 0.025;
+        this.turnSpeed = 0.0265;
         this.hBar = hBar;
         if (this.hBar == undefined)
           this.hBar = 1;
@@ -1085,8 +1085,8 @@ class cleanerBot extends Enemy {
 
 
         if (difficulty == "easy"){
-          this.turnSpeed = 0.0165;
-          this.speed /= 1.2;
+          //this.turnSpeed = 0.0165;
+          //this.speed /= 1.2;
           this.hMulti = 0.75;
         }
         if (difficulty == "hard"){

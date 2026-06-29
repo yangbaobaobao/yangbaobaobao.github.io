@@ -34,7 +34,8 @@ const tutorialText = document.getElementById("tutorialText");
 const difficulty = localStorage.getItem("difficulty") || "normal";
 var dismissed = localStorage.getItem("dismissed") || false;
 if (dismissed != "true") {
-  showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" to dismiss forever)");
+  showNoticeText("[I made the new enemies spawn in the first few waves]\n(press \"n\" to dismiss forever)");
+  //showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" to dismiss forever)");
 }
 
 function showNoticeText(num) {
@@ -415,7 +416,7 @@ function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
   if (type === "AirPod") enemy = new AirPod(x, y, 50, 1.6, 200, 200);
   if (type === "Apple") enemy = new Apple(x, y, 160, 0.7, 1900, 1900);
   if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 2200, 2200);
-  if (type === "Vacuum_big") enemy = new cleanerBot(x, y, 140, 13, 2000, 2000);
+  if (type === "Vacuum_big") enemy = new cleanerBot(x, y, 140, 12, 2000, 2000);
   if (type === "Vacuum_small") enemy = new cleanerBot(x, y, 70, 7, 1600, 1600, 1.2);
 
   enemies.push(enemy);
