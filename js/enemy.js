@@ -752,19 +752,15 @@ class trollPhone extends Enemy {
 
         this.recoverTimer = 0;
         this.recoverTime = 45;
+        this.facing1 = player.x < this.x ? -1 : 1;
     }
 
-    tick(t) {
-      this.timer+=t;
-
-      this.size = this.radius * 1.6;
-      const facing1 = player.x < this.x ? -1 : 1;
-      const facing2 = player.y < this.y ? -1 : 1;
+    render() {
+      this.size = this.radius * 1.6;;
 
       ctx.save();
       ctx.translate(sx(this.x), sy(this.y));
-      ctx.scale(-facing1, 1);
-      //ctx.scale(1, -facing2);
+      ctx.scale(-this.facing1, 1);
 
       ctx.drawImage(
           blankPhoneImg,
@@ -773,7 +769,6 @@ class trollPhone extends Enemy {
           this.size,
           this.size * 1.5
       );
-      console.log(this.size)
 
       this.size = this.radius * 1;
       console.log(this.size)
@@ -784,8 +779,14 @@ class trollPhone extends Enemy {
           this.size,
           this.size
       );
-
       ctx.restore();
+      super.render();
+    }
+
+    tick(t) {
+      this.timer+=t;
+      this.facing1 = player.x < this.x ? -1 : 1;
+
       super.render();
 
       if (this.state === "orbit") {
@@ -1053,6 +1054,135 @@ class Apple extends Enemy {
         this.y += Math.sin(a) * this.speed;
 
         super.tick(t);
+    }
+
+    die() {
+        effects.push(new explosion(this.x, this.y, 200, 500));
+        shakeCamera(25, 100);
+        knockbackPlayer(this.x, this.y, 10);
+        this.dead = true;
+    }
+}
+
+
+class cleanerBot extends Enemy {
+    constructor(x, y, r, s, hp, maxhp, hBar = 1) {
+        super(x, y, r, s, hp, maxhp, 260, 25);
+        this.mass = 8/(hBar*1);
+
+        this.timer = 1000;
+
+        this.angle = -Math.atan2(
+            player.y - this.y,
+            player.x - this.x
+        );
+        this.turnSpeed = 0.025;
+        this.hBar = hBar;
+        if (this.hBar == undefined)
+          this.hBar = 1;
+        this.hMulti = 1;
+        this.attackCooldown = 0;
+
+
+        if (difficulty == "easy"){
+          this.turnSpeed = 0.0165;
+          this.speed /= 1.2;
+          this.hMulti = 0.75;
+        }
+        if (difficulty == "hard"){
+          this.speed /= 1.08;}
+        if (difficulty == "impossible"){
+          this.turnSpeed *= 1.5;
+          this.hMulti = 1.5;
+        }
+    }
+
+    healthbar() {
+      const bw = this.hx/this.hBar;
+      const bh = this.hy/this.hBar;
+      const bx = sx(this.x) - bw/2;
+      const by = sy(this.y) - this.radius - 40;
+
+      this.displayHp1 += (this.hp - this.displayHp1) * 0.15;
+      this.displayHp2 += (this.hp - this.displayHp2) * 0.05;
+
+      ctx.fillStyle = "black";
+      ctx.fillRect(bx,by,bw,bh);
+
+      ctx.fillStyle = "rgba(21, 255, 0, 1)";
+      ctx.fillRect(bx,by,bw*(this.displayHp2/this.maxHp),bh);
+
+      ctx.fillStyle = "red";
+      ctx.fillRect(bx,by,bw*(this.displayHp1/this.maxHp),bh);
+
+      ctx.strokeStyle = "white";
+      ctx.strokeRect(bx,by,bw,bh);
+    }
+
+    render() {
+        this.healthbar();
+
+        const size = this.radius * 2;
+
+        ctx.save();
+        ctx.translate(sx(this.x), sy(this.y));
+        ctx.rotate(this.angle + Math.PI/2);
+
+        ctx.drawImage(
+            vacuumImg,
+            -(size * 1.195) / 2,
+            -size / 2,
+            size * 1.195,
+            size
+        );
+        ctx.rotate(this.angle);
+
+        ctx.restore();
+    }
+
+    tick(t) {
+        this.timer += t;
+        this.attackCooldown--;
+
+        const targetAngle = Math.atan2(
+            player.y - this.y,
+            player.x - this.x
+        );
+
+        let diff = targetAngle - this.angle;
+
+        while (diff > Math.PI) diff -= Math.PI * 2;
+        while (diff < -Math.PI) diff += Math.PI * 2;
+
+        if (Math.abs(diff) < this.turnSpeed) {
+            this.angle = targetAngle;
+        } else {
+            this.angle += Math.sign(diff) * this.turnSpeed;
+        }
+
+        const a = Math.atan2(player.y - this.y, player.x - this.x);
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+
+        super.tick(t);
+
+        const dx = player.x - this.x;
+        const dy = player.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < this.radius + player.radius) {
+            const playerAngle = Math.atan2(dy, dx);
+
+            let angleDiff = playerAngle - this.angle;
+            while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+            while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+
+            if (Math.abs(angleDiff) < Math.PI / 3 && this.attackCooldown <= 0) {
+                damagePlayer((28/this.hBar)*this.hMulti);
+                knockbackPlayer(this.x, this.y, 10);
+                this.attackCooldown = 40;
+            }
+        }
     }
 
     die() {

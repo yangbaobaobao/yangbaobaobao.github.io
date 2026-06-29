@@ -23,9 +23,9 @@ trollImg.src = "5bbc23427517f-removebg-preview.png";
 const ringImg = new Image();
 ringImg.src = "SmartRingCOLMIR02Gold1-removebg-preview.png";
 const podImg = new Image();
-podImg.src = "5-RE_1-removebg-preview.png"
+podImg.src = "5-RE_1-removebg-preview.png";
 const vacuumImg = new Image();
-vacuumImg.src = "0638ac09e7aad892796b480f985e9513da274ff4-1200x1000-removebg-preview"
+vacuumImg.src = "0638ac09e7aad892796b480f985e9513da274ff4-1200x1000-removebg-preview.png";
 
 const waveText = document.getElementById("waveText");
 const noticeText = document.getElementById("noticeText");
@@ -158,7 +158,9 @@ if (false){
   enemies.push(new Watch(400, -400, 70, 1.2, 500, 500));
 }
 
-//enemies.push(new Ring(300, 300, 140, 1, 840, 840));
+//enemies.push(new cleanerBot(300, 300, 140, 13, 1640, 1640));
+//enemies.push(new cleanerBot(300, -300, 70, 9, 1600, 1240, 1.2));
+//enemies.push(new cleanerBot(300, 300, 70, 9, 1600, 1240, 1.2));
 //enemies.push(new AirPod(-300, 300, 50, 0.7, 300, 300));
 //enemies.push(new Apple(300, -300, 160, 0.7, 1600, 1600));
 //enemies.push(new Apple(-300, -300, 160, 0.7, 1600, 1600));
@@ -256,6 +258,8 @@ if (false){
 }
 
 const waves = [
+    { pattern: "circle", type: "Vacuum_small", count: 5 },
+    { pattern: "line", type: "Vacuum_big", count: 1 },
   { pattern: "circle", type: "Watch", count: 8 },
   { pattern: "corners", type: "Ring", count: 2 },
   { pattern: "spiral", type: "AirPod", count: 50 },
@@ -409,8 +413,10 @@ function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
   if (type === "Watch") enemy = new Watch(x, y, 70, 1.2, 500, 500);
   if (type === "Ring") enemy = new Ring(x, y, 140, 3, 1000, 1000);
   if (type === "AirPod") enemy = new AirPod(x, y, 50, 1.6, 200, 200);
-  if (type === "Apple") enemy = new Apple(x, y, 160, 0.7, 1600, 1600);
-  if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 1800, 1800);
+  if (type === "Apple") enemy = new Apple(x, y, 160, 0.7, 1900, 1900);
+  if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 2200, 2200);
+  if (type === "Vacuum_big") enemy = new cleanerBot(x, y, 140, 13, 2000, 2000);
+  if (type === "Vacuum_small") enemy = new cleanerBot(x, y, 70, 7, 1600, 1600, 1.2);
 
   enemies.push(enemy);
   flingIntoWorld(enemy, 0, 0, force);
