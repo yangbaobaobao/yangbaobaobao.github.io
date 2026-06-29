@@ -24,6 +24,8 @@ const ringImg = new Image();
 ringImg.src = "SmartRingCOLMIR02Gold1-removebg-preview.png";
 const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png"
+const vacuumImg = new Image();
+vacuumImg.src = "0638ac09e7aad892796b480f985e9513da274ff4-1200x1000-removebg-preview"
 
 const waveText = document.getElementById("waveText");
 const noticeText = document.getElementById("noticeText");
@@ -262,10 +264,11 @@ const waves = [
   { pattern: "bossApple", type: "Apple", count: 12 },
   { pattern: "mixedCircle", count: 14 },
   { pattern: "spiral", type: "AirPod", count: 10 },
-  { pattern: "circle", type: "Apple", count: 3 },
+  { pattern: "circle", type: "Apple", count: 2 },
   { pattern: "mixedCircle", count: 14 },
   { pattern: "bossHuawei", type: "Huawei", count: 1 },
-  { pattern: "mixedCircle", count: 10 }
+  { pattern: "mixedCircle", count: 10 },
+  { pattern: "final", type: "Apple", count: 9 }
 ];
 
 let tutorialStep = 0;
@@ -407,7 +410,7 @@ function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
   if (type === "Ring") enemy = new Ring(x, y, 140, 3, 1000, 1000);
   if (type === "AirPod") enemy = new AirPod(x, y, 50, 1.6, 200, 200);
   if (type === "Apple") enemy = new Apple(x, y, 160, 0.7, 1600, 1600);
-  if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 1600, 1600);
+  if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 1800, 1800);
 
   enemies.push(enemy);
   flingIntoWorld(enemy, 0, 0, force);
@@ -467,8 +470,13 @@ function spawnWave(wave) {
     }
   }
 
-  if (wave.pattern === "bossHuawei") {
-    spawnEnemy("Huawei", 0, -1000);
+  if (wave.pattern === "final") {
+    spawnEnemy("Apple", 0, -1000);
+    spawnEnemy("Huawei", 0, 1000);
+    for (let i = 0; i < wave.count; i++) {
+      const a = i / wave.count * Math.PI * 2;
+      spawnEnemy("Watch", a, 900, 35);
+    }
   }
 
   if (wave.pattern === "mixedCircle") {
@@ -828,15 +836,15 @@ for (let i=0; i<bullets.length; i++) {
   ctx.fillStyle = "cyan";
   ctx.fill();
   if (tutorialMarker) {
-  ctx.beginPath();
-  ctx.arc(sx(tutorialMarker.x), sy(tutorialMarker.y), tutorialMarker.radius, 0, Math.PI * 2);
-  ctx.strokeStyle = "cyan";
-  ctx.lineWidth = 5;
-  ctx.shadowColor = "cyan";
-  ctx.shadowBlur = 20;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-}
+    ctx.beginPath();
+    ctx.arc(sx(tutorialMarker.x), sy(tutorialMarker.y), tutorialMarker.radius, 0, Math.PI * 2);
+    ctx.strokeStyle = "cyan";
+    ctx.lineWidth = 5;
+    ctx.shadowColor = "cyan";
+    ctx.shadowBlur = 20;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
   updateCameraShake();
 }
 

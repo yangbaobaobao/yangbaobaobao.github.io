@@ -22,10 +22,10 @@ class Player {
       this.angularVelocity += this.torque * 0.001;
       this.angle += this.angularVelocity;
 
-      this.angularVelocity *= 0.94;
+      this.angularVelocity *= 0.9525;
       this.torque *= 0.75;
 
-      if (Math.abs(this.angularVelocity) > 0.08)
+      if (Math.abs(this.angularVelocity) > 0.05)
       this.spinHitEnemies();
 
       // healthbar
@@ -79,9 +79,9 @@ class Player {
     }
 
     spinHitEnemies() {
-      const spinRadius = 180;
+      const spinRadius = 190;
       const spinDamage = Math.abs(this.angularVelocity) * 120;
-      const knockbackPower = Math.abs(this.angularVelocity) * 90;
+      const knockbackPower = Math.abs(this.angularVelocity) * 100;
 
       for (const enemy of enemies) {
         if (!enemy.playerSpinHitTimer) enemy.playerSpinHitTimer = 0;

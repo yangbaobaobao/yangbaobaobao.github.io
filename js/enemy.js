@@ -128,7 +128,7 @@ class laserCharge {
           );
 
           if (laserDist < player.radius + outerWidth / 2 && this.timer < chargeTime - 40) {
-            damagePlayer(9);
+            damagePlayer(12);
           }
 
           ctx.strokeStyle = "rgba(17, 0, 255, 0.4)";
@@ -934,7 +934,7 @@ class Apple extends Enemy {
 
         this.shockRange = 7000;
         this.shockAngle = Math.PI / 1.8;
-        this.shockDamage = 90;
+        this.shockDamage = 80;
         this.shockKnockback = 225;
 
         if (difficulty == "easy")
