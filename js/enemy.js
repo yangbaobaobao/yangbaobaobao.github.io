@@ -1179,7 +1179,7 @@ class cleanerBot extends Enemy {
 
             if (Math.abs(angleDiff) < Math.PI / 3 && this.attackCooldown <= 0) {
                 damagePlayer((28/this.hBar)*this.hMulti);
-                knockbackPlayer(this.x, this.y, 10);
+                knockbackPlayer(this.x, this.y, 20);
                 this.attackCooldown = 40;
             }
         }
