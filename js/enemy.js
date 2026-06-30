@@ -297,6 +297,35 @@ class Enemy {
         this.dead = false;
         this.crashInvulnerbility = false;
         this.cI_timer = 0
+
+        this.ramChance = 1;
+        this.ramMin = 1;
+        this.ramMax = 2;
+        this.hasDropped = false;
+    }
+
+    dropRam() {
+      console.log("fg")
+        if (this.hasDropped) return;
+        this.hasDropped = true;
+
+        if (Math.random() > this.ramChance) return;
+
+        const amount = Math.floor(
+            this.ramMin + Math.random() * (this.ramMax - this.ramMin + 1)
+        );
+
+        for (let i = 0; i < amount; i++) {
+            const a = Math.random() * Math.PI * 2;
+            const spread = 4 + Math.random() * 6;
+            ram.push(new Collectable(
+                this.x,
+                this.y,
+                this.vx * 0.45 + Math.cos(a) * spread,
+                this.vy * 0.45 + Math.sin(a) * spread,
+                1
+            ));
+        }
     }
 
     render() {this.healthbar();}
@@ -355,6 +384,7 @@ class Enemy {
     }
 
     die() {
+      this.dropRam();
       effects.push(new explosion(this.x, this.y, 5, 500));
       shakeCamera(15, 70);
       knockbackPlayer(this.x, this.y, 2);
@@ -377,6 +407,9 @@ class Watch extends Enemy {
         this.facing2 = false;
         this.shotsPerVolley = 5;
         this.spreadAngle = 1; // total fan width in radians
+        this.ramChance = 0.4;
+        this.ramMin = 1;
+        this.ramMax = 2;
         if (difficulty == "impossible")
           this.delay = parseInt(this.delay / 1.5);
     }
@@ -472,6 +505,9 @@ class AirPod extends Enemy {
         this.touchCooldown = 0;
         this.touchDamage = 12;
         this.knockbackPower = 0;
+        this.ramChance = 0.05;
+        this.ramMin = 1;
+        this.ramMax = 1;
     }
 
     render() {
@@ -525,6 +561,7 @@ class AirPod extends Enemy {
   }
 
   die() {
+      this.dropRam();
       effects.push(new explosion(this.x, this.y, 2, 200));
       shakeCamera(4, 50);
       //knockbackPlayer(this.x, this.y, 2);
@@ -578,6 +615,10 @@ class Ring extends Enemy {
           this.dashSpeed *= 1.1;
           this.touchDamage /= 1;
         }
+
+        this.ramChance = 0.65;
+        this.ramMin = 2;
+        this.ramMax = 4;
     }
 
     render() {
@@ -717,6 +758,7 @@ class Ring extends Enemy {
     }
 
     die() {
+      this.dropRam();
       effects.push(new explosion(this.x, this.y, 100, 400));
       shakeCamera(23, 100);
       knockbackPlayer(this.x, this.y, 10);
@@ -876,6 +918,9 @@ class Huawei extends Enemy {
         this.image.src = "huawei.png";
         this.timer = 1000;
         this.mass = 50;
+        this.ramChance = 1;
+        this.ramMin = 5;
+        this.ramMax = 10;
     }
 
     render() {
@@ -908,6 +953,7 @@ class Huawei extends Enemy {
     }
 
     die() {
+      this.dropRam();
       effects.push(new explosion(this.x, this.y, 200, 500));
       shakeCamera(25, 100);
       knockbackPlayer(this.x, this.y, 12);
@@ -937,6 +983,9 @@ class Apple extends Enemy {
         this.shockAngle = Math.PI / 1.8;
         this.shockDamage = 80;
         this.shockKnockback = 225;
+        this.ramChance = 1;
+        this.ramMin = 3;
+        this.ramMax = 7;
 
         if (difficulty == "easy")
           this.chargeTime = 180;
@@ -1057,6 +1106,7 @@ class Apple extends Enemy {
     }
 
     die() {
+        this.dropRam();
         effects.push(new explosion(this.x, this.y, 200, 500));
         shakeCamera(25, 100);
         knockbackPlayer(this.x, this.y, 10);
@@ -1066,9 +1116,9 @@ class Apple extends Enemy {
 
 
 class cleanerBot extends Enemy {
-    constructor(x, y, r, s, hp, maxhp, hBar = 1) {
+    constructor(x, y, r, s, hp, maxhp, hBar = 1, turnSpeed = 0.0265) {
         super(x, y, r, s, hp, maxhp, 260, 25);
-        this.mass = 8/(hBar*1);
+        this.mass = 8/(hBar*1.25);
 
         this.timer = 1000;
 
@@ -1076,12 +1126,16 @@ class cleanerBot extends Enemy {
             player.y - this.y,
             player.x - this.x
         );
-        this.turnSpeed = 0.0265;
+        this.turnSpeed = turnSpeed;
         this.hBar = hBar;
         if (this.hBar == undefined)
           this.hBar = 1;
         this.hMulti = 1;
         this.attackCooldown = 0;
+
+        this.ramChance = 0.45;
+        this.ramMin = 1;
+        this.ramMax = 2;
 
 
         if (difficulty == "easy"){
@@ -1186,6 +1240,7 @@ class cleanerBot extends Enemy {
     }
 
     die() {
+        this.dropRam();
         effects.push(new explosion(this.x, this.y, 200, 500));
         shakeCamera(25, 100);
         knockbackPlayer(this.x, this.y, 10);

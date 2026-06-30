@@ -92,3 +92,81 @@ class ConeShockwave {
             this.dead = true;
     }
 }
+
+class Collectable {
+    constructor(x, y, vx = 0, vy = 0, amount = 1) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+
+        this.amount = amount;
+        this.timer = 0;
+        this.dead = false;
+        this.radius = 100;
+
+        this.friction = 0.94;
+        this.bounce = 0.55;
+    }
+
+    tick() {
+        this.timer++;
+
+        if (timeMalTimer <= 0) {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            this.vx *= this.friction;
+            this.vy *= this.friction;
+
+            keepInside(this);
+        }
+
+        const size = this.radius * 0.55;
+        const w = size * 1.75;
+        const h = size;
+
+        let hover = 0;
+        if (timeMalTimer <= 0)
+            hover = Math.sin(this.timer * 0.08) * 3;
+
+        const floatY = -7.5 + hover;
+
+        ctx.save();
+        ctx.translate(sx(this.x), sy(this.y));
+
+        const temp = document.createElement("canvas");
+        temp.width = w;
+        temp.height = h;
+        const tctx = temp.getContext("2d");
+
+        tctx.drawImage(ramImg, 0, 0, w, h);
+        tctx.globalCompositeOperation = "source-in";
+        tctx.fillStyle = "yellow";
+        tctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.shadowColor = "yellow";
+        ctx.shadowBlur = 25;
+        ctx.globalAlpha = 0.65;
+        ctx.drawImage(temp, -w / 2, -h / 2);
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(0, floatY);
+        ctx.shadowColor = "yellow";
+        ctx.shadowBlur = 15;
+
+        ctx.drawImage(ramImg, -w / 2, -h / 2, w, h);
+
+        ctx.restore();
+        ctx.restore();
+
+        if (dist(this.x, this.y, player.x, player.y) < this.radius/5 + player.radius) {
+            credits += this.amount;
+            localStorage.setItem("credits", credits);
+            showRamCounter();
+            this.dead = true;
+        }
+    }
+}

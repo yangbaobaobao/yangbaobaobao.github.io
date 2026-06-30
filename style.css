@@ -182,3 +182,51 @@ canvas {
     opacity: 0;
   }
 }
+
+#ramCounter {
+  position: fixed;
+  top: 25px;
+  right: 35px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-family: Arial, sans-serif;
+  font-size: 42px;
+  font-weight: bold;
+  color: yellow;
+  text-shadow: 0 0 18px yellow;
+
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+#ramCounter img {
+  width: 84px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.ramCounterAnim {
+  animation: ramCounterFade 4s ease-out forwards;
+}
+
+@keyframes ramCounterFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}

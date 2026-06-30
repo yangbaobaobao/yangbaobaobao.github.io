@@ -1,5 +1,8 @@
 const canvas = document.getElementById("introCanvas");
 const ctx = canvas.getContext("2d");
+var credits = Number(localStorage.getItem("credits")) || 0;
+const ramAmount = document.getElementById("ramAmount");
+ramAmount.textContent = credits;
 
 let difficulty = "normal";
 

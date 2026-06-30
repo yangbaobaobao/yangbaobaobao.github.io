@@ -26,12 +26,17 @@ const podImg = new Image();
 podImg.src = "5-RE_1-removebg-preview.png";
 const vacuumImg = new Image();
 vacuumImg.src = "0638ac09e7aad892796b480f985e9513da274ff4-1200x1000-removebg-preview.png";
+const ramImg = new Image();
+ramImg.src = "how-to-install-ram-one-a-motherboard-hero156711117076644-removebg-preview.png";
 
 const waveText = document.getElementById("waveText");
 const noticeText = document.getElementById("noticeText");
 const difficultyText = document.getElementById("difficultyText");
 const tutorialText = document.getElementById("tutorialText");
 const difficulty = localStorage.getItem("difficulty") || "normal";
+var credits = Number(localStorage.getItem("credits")) || 0;
+const ramCounter = document.getElementById("ramCounter");
+const ramAmount = document.getElementById("ramAmount");
 var dismissed = localStorage.getItem("dismissed") || false;
 if (dismissed != "true") {
   showNoticeText("[I made the new enemies spawn in the first few waves]\n(press \"n\" to dismiss forever)");
@@ -65,6 +70,7 @@ console.log(difficulty);
 
 let lc = [];
 let enemies = [];
+let ram= [];
 var cameraShakeX = 0;
 var cameraShakeY = 0;
 var universalTimer = 0;
@@ -158,14 +164,14 @@ if (false){
   enemies.push(new Watch(-400, -400, 70, 1.2, 500, 500));
   enemies.push(new Watch(400, -400, 70, 1.2, 500, 500));
 }
-
+//ram.push(new Collectable(1000, 0))
 //enemies.push(new cleanerBot(300, 300, 140, 13, 1640, 1640));
 //enemies.push(new cleanerBot(300, -300, 70, 9, 1600, 1240, 1.2));
 //enemies.push(new cleanerBot(300, 300, 70, 9, 1600, 1240, 1.2));
 //enemies.push(new AirPod(-300, 300, 50, 0.7, 300, 300));
 //enemies.push(new Apple(300, -300, 160, 0.7, 1600, 1600));
 //enemies.push(new Apple(-300, -300, 160, 0.7, 1600, 1600));
-//nemies.push(new Apple(-300, 300, 160, 0.7, 1600, 1600));
+//enemies.push(new Apple(-300, 300, 160, 0.7, 1600, 1600));
 //enemies.push(new Apple(300, 300, 160, 0.7, 1600, 1600));
 //enemies.push(new Huawei(300, 300, 160, 1, 1600, 1600));
 
@@ -259,14 +265,13 @@ if (false){
 }
 
 const waves = [
-    { pattern: "circle", type: "Vacuum_small", count: 5 },
-    { pattern: "line", type: "Vacuum_big", count: 1 },
   { pattern: "circle", type: "Watch", count: 8 },
   { pattern: "corners", type: "Ring", count: 2 },
   { pattern: "spiral", type: "AirPod", count: 50 },
   { pattern: "line", type: "Watch", count: 14 },
   { pattern: "mixedCircle", count: 8 },
   { pattern: "bossApple", type: "Apple", count: 12 },
+  { pattern: "circle", type: "Vacuum_small", count: 7 },
   { pattern: "mixedCircle", count: 14 },
   { pattern: "spiral", type: "AirPod", count: 10 },
   { pattern: "circle", type: "Apple", count: 2 },
@@ -416,8 +421,8 @@ function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
   if (type === "AirPod") enemy = new AirPod(x, y, 50, 1.6, 200, 200);
   if (type === "Apple") enemy = new Apple(x, y, 160, 0.7, 1900, 1900);
   if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 2200, 2200);
-  if (type === "Vacuum_big") enemy = new cleanerBot(x, y, 140, 11, 1600, 1600);
-  if (type === "Vacuum_small") enemy = new cleanerBot(x, y, 70, 5.5, 1000, 1000, 1.2);
+  if (type === "Vacuum_big") enemy = new cleanerBot(x, y, 140, 12, 1600, 1600, 1, 0.0225);
+  if (type === "Vacuum_small") enemy = new cleanerBot(x, y, 70, 6.5, 1000, 1000, 1.2, 0.0255);
 
   enemies.push(enemy);
   flingIntoWorld(enemy, 0, 0, force);
@@ -798,6 +803,14 @@ function draw(){
   }
 }
 
+  for (let i=0; i<ram.length; i++) {
+      ram[i].tick();
+
+    if (ram[i].dead) {
+      ram.splice(i, 1);
+    }
+  }
+  
 for (let i=0; i<enemies.length; i++) {
       enemies[i].render();
 
@@ -858,6 +871,12 @@ for (let i=0; i<bullets.length; i++) {
 function loop(){
   if (keys["n"]) localStorage.setItem("dismissed", "true");
   if (keys["/"]) localStorage.setItem("dismissed", "false");
+  if (keys["@"]) {
+    credits = 0;
+    //alert("DEBUG: currency reset")
+    localStorage.setItem("credits", credits);
+    showRamCounter();
+  }
   if (!freezeGlitch.active) {
     update();
     draw();
@@ -993,6 +1012,14 @@ function drawGrid(size, color, width) {
     ctx.lineTo(canvas.width, sy(y));
     ctx.stroke();
   }
+}
+
+function showRamCounter() {
+  ramAmount.textContent = credits;
+
+  ramCounter.classList.remove("ramCounterAnim");
+  void ramCounter.offsetWidth;
+  ramCounter.classList.add("ramCounterAnim");
 }
 
 loop();
