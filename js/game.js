@@ -39,7 +39,7 @@ const ramCounter = document.getElementById("ramCounter");
 const ramAmount = document.getElementById("ramAmount");
 var dismissed = localStorage.getItem("dismissed") || false;
 if (dismissed != "true") {
-  showNoticeText("[I made the new enemies spawn in the first few waves]\n(press \"n\" to dismiss forever)");
+  showNoticeText("[RAM now drop from killing enemies, stronger enemies drop more RAM]\n(press \"n\" to dismiss forever)");
   //showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" to dismiss forever)");
 }
 

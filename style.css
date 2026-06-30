@@ -202,6 +202,10 @@ canvas {
   z-index: 1000;
 }
 
+#noticeText {
+    white-space: pre-line;
+}
+
 #ramCounter img {
   width: 84px;
   height: 48px;
