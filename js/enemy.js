@@ -213,10 +213,10 @@ class Bullet {
     }
     if (difficulty == "normal") {
       this.damage /= 1.25;
-      this.speed /= 1.1;
+      this.speed /= 1.12;
     }
     if (difficulty == "hard")
-      this.speed *= 1.1875;
+      this.speed /= 1;
     if (difficulty == "impossible"){
       this.damage *= 1.2;
       this.speed *= 1;
