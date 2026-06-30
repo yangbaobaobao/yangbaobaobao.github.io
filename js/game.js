@@ -416,8 +416,8 @@ function spawnEnemy(type, angle, distanceOutside = 700, force = 35) {
   if (type === "AirPod") enemy = new AirPod(x, y, 50, 1.6, 200, 200);
   if (type === "Apple") enemy = new Apple(x, y, 160, 0.7, 1900, 1900);
   if (type === "Huawei") enemy = new Huawei(x, y, 160, 1, 2200, 2200);
-  if (type === "Vacuum_big") enemy = new cleanerBot(x, y, 140, 11, 2000, 2000);
-  if (type === "Vacuum_small") enemy = new cleanerBot(x, y, 70, 5.5, 1600, 1600, 1.2);
+  if (type === "Vacuum_big") enemy = new cleanerBot(x, y, 140, 11, 1600, 1600);
+  if (type === "Vacuum_small") enemy = new cleanerBot(x, y, 70, 5.5, 1000, 1000, 1.2);
 
   enemies.push(enemy);
   flingIntoWorld(enemy, 0, 0, force);
