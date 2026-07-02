@@ -218,7 +218,7 @@ class Bullet {
     if (difficulty == "hard")
       this.speed /= 1;
     if (difficulty == "impossible"){
-      this.damage *= 1.2;
+      this.damage *= 1.5;
       this.speed *= 1;
     }
   }

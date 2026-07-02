@@ -1,5 +1,5 @@
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+var canvas;
+var ctx;
 const huaweiImg = new Image();
 huaweiImg.src = "huawei.png";
 const appleImg = new Image();
@@ -10,7 +10,7 @@ const auraImg = new Image();
 auraImg.src = "energy aura blue.png";
 const explosionImg = new Image();
 explosionImg.src = "energy_shockwave.png";
-const bullet= new Image();
+const bullet = new Image();
 bullet.src = "bolt.png";
 const sledgeHammer = new Image();
 sledgeHammer.src = "Sledgehammer_SS3.webp";
@@ -29,19 +29,16 @@ vacuumImg.src = "0638ac09e7aad892796b480f985e9513da274ff4-1200x1000-removebg-pre
 const ramImg = new Image();
 ramImg.src = "how-to-install-ram-one-a-motherboard-hero156711117076644-removebg-preview.png";
 
-const waveText = document.getElementById("waveText");
-const noticeText = document.getElementById("noticeText");
-const difficultyText = document.getElementById("difficultyText");
-const tutorialText = document.getElementById("tutorialText");
-const difficulty = localStorage.getItem("difficulty") || "normal";
+var waveText;
+var noticeText;
+var difficultyText;
+var tutorialText;
+var ramCounter;
+var ramAmount;
+
+var difficulty = localStorage.getItem("difficulty") || "normal";
 var credits = Number(localStorage.getItem("credits")) || 0;
-const ramCounter = document.getElementById("ramCounter");
-const ramAmount = document.getElementById("ramAmount");
 var dismissed = localStorage.getItem("dismissed") || false;
-if (dismissed != "true") {
-  showNoticeText("[RAM now drop from killing enemies, stronger enemies drop more RAM]\n(press \"n\" to dismiss forever)");
-  //showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" to dismiss forever)");
-}
 
 function showNoticeText(num) {
   noticeText.textContent = num;
@@ -86,6 +83,7 @@ let waveCooldown = 0;
 let waveTimer = 0;
 let currentWaveHpPool = 0;
 let currentWaveTriggered = false;
+var isDead = false;
 
 const keybinds = JSON.parse(localStorage.getItem("keybinds")) || {
   heal: "h",
@@ -134,12 +132,13 @@ addEventListener("mouseup", e => {
   }
 });
 
-function resize(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+function resize() {
+    if (!canvas) return;
+    console.log("GBGABGAGB")
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
 }
 
-resize();
 addEventListener("resize", resize);
 
 const world = { x:0, y:0, radius:1600 };
@@ -265,7 +264,7 @@ if (false){
 }
 
 const waves = [
-  { pattern: "circle", type: "Watch", count: 8 },
+  { pattern: "circle", type: "Watch", count: 80 },
   { pattern: "corners", type: "Ring", count: 2 },
   { pattern: "spiral", type: "AirPod", count: 50 },
   { pattern: "line", type: "Watch", count: 14 },
@@ -717,48 +716,9 @@ function update(){
     invertTarget = 1;
     pNotPressed = false;
   }
-  //print(timeCooldown);
-  if (timeCooldown > 0 && keys[keybinds.time] && pNotPressed)
-  {
-    timeCooldown = 80;
-    invertTarget = 0;
-    timeMalTimer = 0;
-    pNotPressed = false;
-  }
   if (!keys[keybinds.time])
     pNotPressed = true;
-  if (player.invincibleTimer > 0) {
-    player.invincibleTimer--;
-  }
-  invert += (invertTarget - invert) * 0.1;
-  let dx=0, dy=0;
-
-  if(keys[keybinds.up]) dy-=2;
-  if(keys[keybinds.down]) dy+=2;
-  if(keys[keybinds.left]) dx-=2;
-  if(keys[keybinds.right]) dx+=2;
-
-  if(dx || dy){
-    const l = Math.hypot(dx,dy);
-    dx/=l; dy/=l;
-  }
-
-  // actively slow knockback if player moves against it
-  if (dx || dy) {
-    const dot = player.vx * dx + player.vy * dy;
-
-    // dot < 0 means input is opposite knockback direction
-    if (dot < 0) {
-      const slowPower = 0.35;
-
-      player.vx += dx * player.speed * slowPower;
-      player.vy += dy * player.speed * slowPower;
-    }
-  }
-
-  // normal movement
-  player.x += dx * player.speed;
-  player.y += dy * player.speed;
+  //print(timeCooldown);
 
   // knockback velocity movement
   player.x += player.vx;
@@ -777,7 +737,7 @@ function draw(){
   canvas.style.filter = "invert("+invert+")";
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  drawTechBackground();
+  drawTechBackgroundLose();
 
   ctx.beginPath();
   ctx.arc(sx(0), sy(0), world.radius, 0, Math.PI*2);
@@ -868,29 +828,6 @@ for (let i=0; i<bullets.length; i++) {
   updateCameraShake();
 }
 
-function loop(){
-  if (keys["n"]) localStorage.setItem("dismissed", "true");
-  if (keys["/"]) localStorage.setItem("dismissed", "false");
-  if (keys["@"]) {
-    credits = 0;
-    //alert("DEBUG: currency reset")
-    localStorage.setItem("credits", credits);
-    showRamCounter();
-  }
-  if (!freezeGlitch.active) {
-    update();
-    draw();
-  } else {
-    drawFreezeGlitch();
-    freezeGlitch.timer--;
-
-    if (freezeGlitch.timer <= 0) {
-      freezeGlitch.active = false;
-    }
-  }
-  requestAnimationFrame(loop);
-}
-
 function knockbackPlayer(fromX, fromY, force){
   const a = Math.atan2(player.y - fromY, player.x - fromX);
   hammer.cancelCharge();
@@ -955,7 +892,7 @@ function hitEnemyWithArc(x, y, angle, range, arc, damage, knockback) {
   }
 }
 
-function drawTechBackground() {
+function drawTechBackgroundLose() {
   // dark base
   ctx.fillStyle = "#020b14";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -970,13 +907,13 @@ function drawTechBackground() {
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
 
-  drawGrid(25, "rgba(0, 190, 255, 0.18)", 1);
+  drawGridLose(25, "rgba(0, 190, 255, 0.18)", 1);
 
-  drawGrid(150, "rgba(0, 220, 255, 0.75)", 2);
+  drawGridLose(150, "rgba(0, 220, 255, 0.75)", 2);
 
   ctx.restore();
 
-  drawGrid(450, "rgba(0, 220, 255, 0.75)", 2);
+  drawGridLose(450, "rgba(0, 220, 255, 0.75)", 2);
 
   // outer glow ring
   ctx.beginPath();
@@ -989,7 +926,7 @@ function drawTechBackground() {
   ctx.shadowBlur = 0;
 }
 
-function drawGrid(size, color, width) {
+function drawGridLose(size, color, width) {
   ctx.strokeStyle = color;
   ctx.lineWidth = width;
 
@@ -1022,4 +959,110 @@ function showRamCounter() {
   ramCounter.classList.add("ramCounterAnim");
 }
 
+let gameRunning = false;
+
+function resetGame() {
+    gameRunning = true;
+    resetEverything();
+}
+
+function loop() {
+    if (gameRunning) {
+        update();
+        draw();
+    }
+    if (keys["n"]) localStorage.setItem("dismissed", "true");
+    if (keys["/"]) localStorage.setItem("dismissed", "false");
+    if (keys["@"]) {
+      credits = 0;
+      //alert("DEBUG: currency reset")
+      localStorage.setItem("credits", credits);
+      showRamCounter();
+    }
+    if (freezeGlitch.active) {
+      drawFreezeGlitch();
+      freezeGlitch.timer--;
+
+      if (freezeGlitch.timer <= 0) {
+        freezeGlitch.active = false;
+      }
+    }
+    requestAnimationFrame(loop);
+}
+
 loop();
+
+function startEverything() {
+    canvas = document.getElementById("game");
+    ctx = canvas.getContext("2d");
+
+    canvas.style.filter = "invert(0)";
+
+    waveText = document.getElementById("waveText");
+    noticeText = document.getElementById("noticeText");
+    difficultyText = document.getElementById("difficultyText");
+    tutorialText = document.getElementById("tutorialText");
+    ramCounter = document.getElementById("ramCounter");
+    ramAmount = document.getElementById("ramAmount");
+
+    difficulty = localStorage.getItem("difficulty") || "normal";
+    difficultyText.textContent = "Difficulty: " + difficulty;
+
+    resize();
+    if (dismissed != "true") {
+      showNoticeText("[RAM now drop from killing enemies, stronger enemies drop more RAM]\n(press \"n\" to dismiss forever)");
+      //showNoticeText("NOTE: Your progress will be reset if you reload the page\n(press \"n\" to dismiss forever)");
+    }
+}
+function resetEverything() {
+    enemies.length = 0;
+    bullets.length = 0;
+    effects.length = 0;
+    ram.length = 0;
+    lc.length = 0;
+    isDead = false;
+
+    player.x = 0;
+    player.y = 0;
+    player.vx = 0;
+    player.vy = 0;
+    player.invincibleTimer = 0;
+    player.hpHeal = 0;
+    player.hp = player.maxHp;
+
+    camera.x = 0;
+    camera.y = 0;
+
+    waveIndex = 0;
+    waveCooldown = 0;
+    waveTimer = 0;
+
+    hammer.reset();
+
+    cameraShakeX = 0;
+    cameraShakeY = 0;
+
+    shakeStrength = 0;
+    shakeTime = 0;
+    shakeDuration = 0;
+
+    invert = 0;
+    invertTarget = 0;
+
+    timeCooldown = 0;
+    timeMalTimer = 0;
+
+    currentWaveHpPool = 0;
+    currentWaveTriggered = false;
+
+    tutorialStarted = false;
+    tutorialDone = false;
+    tutorialStep = 0;
+
+    mouse.down = false;
+    mouse.holdTime = 0;
+
+    universalTimer = 0;
+
+    startNextWave();
+}

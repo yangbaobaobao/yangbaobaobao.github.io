@@ -1,141 +1,153 @@
-const canvas = document.getElementById("gameOver");
-const ctx = canvas.getContext("2d");
+let canvasLose;
+let ctxLose;
+let loseRunning = false;
 
-function resize() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+function startLose() {
+  canvasLose = document.getElementById("gameOver");
+  ctxLose = canvasLose.getContext("2d");
+
+  loseRunning = true;
+  resizeLose();
+  drawTechBackground();
+  captureFrame();
+  loopx();
+}
+function resizeLose() {
+  if (!canvasLose) return;
+
+  canvasLose.width = innerWidth;
+  canvasLose.height = innerHeight;
 }
 
-resize();
-addEventListener("resize", resize);
+function stopLose() {
+  loseRunning = false;
+}
 
-let freezeGlitch = {
+function loopx() {
+  if (!loseRunning) return;
+
+  drawFreezeGlitchOver();
+
+  requestAnimationFrame(loopx);
+}
+
+addEventListener("resize", resizeLose);
+
+let freezeGlitchLose = {
   snapshot: document.createElement("canvas")
 };
 
 function drawGrid(size, color, width) {
-  ctx.strokeStyle = color;
-  ctx.lineWidth = width;
+  ctxLose.strokeStyle = color;
+  ctxLose.lineWidth = width;
 
-  for (let x = 0; x <= canvas.width; x += size) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, canvas.height);
-    ctx.stroke();
+  for (let x = 0; x <= canvasLose.width; x += size) {
+    ctxLose.beginPath();
+    ctxLose.moveTo(x, 0);
+    ctxLose.lineTo(x, canvasLose.height);
+    ctxLose.stroke();
   }
 
-  for (let y = 0; y <= canvas.height; y += size) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(canvas.width, y);
-    ctx.stroke();
+  for (let y = 0; y <= canvasLose.height; y += size) {
+    ctxLose.beginPath();
+    ctxLose.moveTo(0, y);
+    ctxLose.lineTo(canvasLose.width, y);
+    ctxLose.stroke();
   }
 }
 
 function drawTechBackground() {
-  ctx.fillStyle = "#020b14";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctxLose.fillStyle = "#020b14";
+  ctxLose.fillRect(0, 0, canvasLose.width, canvasLose.height);
 
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
+  const cx = canvasLose.width / 2;
+  const cy = canvasLose.height / 2;
   const r = 2000;
 
-  ctx.save();
+  ctxLose.save();
 
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.clip();
+  ctxLose.beginPath();
+  ctxLose.arc(cx, cy, r, 0, Math.PI * 2);
+  ctxLose.clip();
 
   drawGrid(25, "rgba(0,190,255,0.15)", 1);
   drawGrid(150, "rgba(0,220,255,0.75)", 2);
 
-  ctx.restore();
+  ctxLose.restore();
 
   drawGrid(450, "rgba(0,220,255,0.35)", 2);
 
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.strokeStyle = "rgba(80,230,255,0.95)";
-  ctx.lineWidth = 8;
-  ctx.shadowColor = "cyan";
-  ctx.shadowBlur = 25;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
+  ctxLose.beginPath();
+  ctxLose.arc(cx, cy, r, 0, Math.PI * 2);
+  ctxLose.strokeStyle = "rgba(80,230,255,0.95)";
+  ctxLose.lineWidth = 8;
+  ctxLose.shadowColor = "cyan";
+  ctxLose.shadowBlur = 25;
+  ctxLose.stroke();
+  ctxLose.shadowBlur = 0;
 
   // scan lines
-  ctx.strokeStyle = "rgba(0,255,255,0.04)";
-  ctx.lineWidth = 1;
+  ctxLose.strokeStyle = "rgba(0,255,255,0.04)";
+  ctxLose.lineWidth = 1;
 
-  for (let y = 0; y < canvas.height; y += 4) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(canvas.width, y);
-    ctx.stroke();
+  for (let y = 0; y < canvasLose.height; y += 4) {
+    ctxLose.beginPath();
+    ctxLose.moveTo(0, y);
+    ctxLose.lineTo(canvasLose.width, y);
+    ctxLose.stroke();
   }
 }
 
 function captureFrame() {
-  freezeGlitch.snapshot.width = canvas.width;
-  freezeGlitch.snapshot.height = canvas.height;
+  freezeGlitchLose.snapshot.width = canvasLose.width;
+  freezeGlitchLose.snapshot.height = canvasLose.height;
 
-  const sctx = freezeGlitch.snapshot.getContext("2d");
+  const sctx = freezeGlitchLose.snapshot.getContext("2d");
 
   sctx.clearRect(
     0,
     0,
-    freezeGlitch.snapshot.width,
-    freezeGlitch.snapshot.height
+    freezeGlitchLose.snapshot.width,
+    freezeGlitchLose.snapshot.height
   );
 
-  sctx.drawImage(canvas, 0, 0);
+  sctx.drawImage(canvasLose, 0, 0);
 }
 
-function drawFreezeGlitch() {
-  const img = freezeGlitch.snapshot;
+function drawFreezeGlitchOver() {
+  const img = freezeGlitchLose.snapshot;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctxLose.clearRect(0, 0, canvasLose.width, canvasLose.height);
 
   const sliceHeight = 6;
 
-  for (let y = 0; y < canvas.height; y += sliceHeight) {
+  for (let y = 0; y < canvasLose.height; y += sliceHeight) {
     const offsetX = Math.random() * 12 - 6;
     const offsetY = Math.random() * 2 - 1;
 
-    ctx.drawImage(
+    ctxLose.drawImage(
       img,
       0,
       y,
-      canvas.width,
+      canvasLose.width,
       sliceHeight,
       offsetX,
       y + offsetY,
-      canvas.width,
+      canvasLose.width,
       sliceHeight
     );
   }
 
   // subtle cyan tint
-  ctx.fillStyle = "rgba(0,255,255,0.025)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctxLose.fillStyle = "rgba(0,255,255,0.025)";
+  ctxLose.fillRect(0, 0, canvasLose.width, canvasLose.height);
 
   // occasional glitch bars
   if (Math.random() < 0.15) {
-    const y = Math.random() * canvas.height;
+    const y = Math.random() * canvasLose.height;
     const h = Math.random() * 6 + 1;
 
-    ctx.fillStyle = "rgba(0,255,255,0.06)";
-    ctx.fillRect(0, y, canvas.width, h);
+    ctxLose.fillStyle = "rgba(0,255,255,0.06)";
+    ctxLose.fillRect(0, y, canvasLose.width, h);
   }
 }
-
-function loop() {
-  drawTechBackground();
-
-  captureFrame();
-
-  drawFreezeGlitch();
-
-  requestAnimationFrame(loop);
-}
-
-loop();

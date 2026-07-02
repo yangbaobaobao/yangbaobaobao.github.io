@@ -54,15 +54,70 @@ class Player {
       ctx.strokeStyle = "white";
       ctx.strokeRect(bx,by,bw,bh);
 
-      if (this.hp <= 0)
+      if (this.hp <= 0 && !isDead)
       {
-        startFreezeGlitch();
-
+        /*
         setTimeout(() => {
           window.location.href = "game over.html";
         }, 2000);
+        */
+       isDead = true;
+      gameRunning = false;
+
+        startFreezeGlitch();
+       setTimeout(() => {
+          gameOver();
+        }, 2000);
         //throw new Error("Game Over");
+        //return;
       }
+
+      if (timeCooldown > 0 && keys[keybinds.time] && pNotPressed)
+      {
+        timeCooldown = 80;
+        invertTarget = 0;
+        timeMalTimer = 0;
+        pNotPressed = false;
+      }
+      if (this.invincibleTimer > 0) {
+        this.invincibleTimer--;
+      }
+      invert += (invertTarget - invert) * 0.1;
+      let dx=0, dy=0;
+
+      if(keys[keybinds.up]) dy-=2;
+      if(keys[keybinds.down]) dy+=2;
+      if(keys[keybinds.left]) dx-=2;
+      if(keys[keybinds.right]) dx+=2;
+
+      if(dx || dy){
+        const l = Math.hypot(dx,dy);
+        dx/=l; dy/=l;
+      }
+
+      // actively slow knockback if player moves against it
+      if (dx || dy) {
+        const dot = this.vx * dx + this.vy * dy;
+
+        // dot < 0 means input is opposite knockback direction
+        if (dot < 0) {
+          const slowPower = 0.35;
+
+          this.vx += dx * this.speed * slowPower;
+          this.vy += dy * this.speed * slowPower;
+        }
+      }
+
+      // normal movement
+      this.x += dx * this.speed;
+      this.y += dy * this.speed;
+
+      // knockback velocity movement
+      this.x += this.vx;
+      this.y += this.vy;
+
+      this.vx *= this.friction;
+      this.vy *= this.friction;
 
       if (keys[keybinds.heal] && this.hpHeal < this.maxHp)
           this.hpHeal+=8.35;
@@ -442,6 +497,15 @@ class Hammer {
         }
       }
     }
+  }
+
+  reset() {
+    this.state = "held";
+    this.x = player.x;
+    this.y = player.y;
+    this.vx = 0;
+    this.vy = 0;
+    this.chargeTime = 0;
   }
 }
 

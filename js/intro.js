@@ -1,68 +1,80 @@
-const canvas = document.getElementById("introCanvas");
-const ctx = canvas.getContext("2d");
+const canvasIntro = document.getElementById("introCanvas");
+const ctxIntro = canvasIntro.getContext("2d");
 var credits = Number(localStorage.getItem("credits")) || 0;
-const ramAmount = document.getElementById("ramAmount");
-ramAmount.textContent = credits;
+const ramAmountIntro = document.getElementById("ramAmount");
+ramAmountIntro.textContent = credits;
 
-let difficulty = "normal";
+let introDifficulty = "normal";
 
 
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+canvasIntro.width = innerWidth;
+canvasIntro.height = innerHeight;
 
 
 function drawGrid(size, color, width) {
-  ctx.strokeStyle = color;
-  ctx.lineWidth = width;
+  ctxIntro.strokeStyle = color;
+  ctxIntro.lineWidth = width;
 
-  for (let x = 0; x <= canvas.width; x += size) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, canvas.height);
-    ctx.stroke();
+  for (let x = 0; x <= canvasIntro.width; x += size) {
+    ctxIntro.beginPath();
+    ctxIntro.moveTo(x, 0);
+    ctxIntro.lineTo(x, canvasIntro.height);
+    ctxIntro.stroke();
   }
 
-  for (let y = 0; y <= canvas.height; y += size) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(canvas.width, y);
-    ctx.stroke();
+  for (let y = 0; y <= canvasIntro.height; y += size) {
+    ctxIntro.beginPath();
+    ctxIntro.moveTo(0, y);
+    ctxIntro.lineTo(canvasIntro.width, y);
+    ctxIntro.stroke();
   }
 }
 
 function drawIntroBackground() {
-  ctx.fillStyle = "#020b14";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctxIntro.fillStyle = "#020b14";
+  ctxIntro.fillRect(0, 0, canvasIntro.width, canvasIntro.height);
 
   drawGrid(25, "rgba(0,190,255,0.12)", 1);
   drawGrid(150, "rgba(0,220,255,0.45)", 2);
   drawGrid(450, "rgba(0,220,255,0.25)", 2);
 
-  ctx.strokeStyle = "rgba(0,255,255,0.04)";
-  ctx.lineWidth = 1;
+  ctxIntro.strokeStyle = "rgba(0,255,255,0.04)";
+  ctxIntro.lineWidth = 1;
 
-  for (let y = 0; y < canvas.height; y += 4) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(canvas.width, y);
-    ctx.stroke();
+  for (let y = 0; y < canvasIntro.height; y += 4) {
+    ctxIntro.beginPath();
+    ctxIntro.moveTo(0, y);
+    ctxIntro.lineTo(canvasIntro.width, y);
+    ctxIntro.stroke();
   }
 
   if (Math.random() < 0.2) {
-    ctx.fillStyle = "rgba(0,255,255,0.08)";
-    ctx.fillRect(0, Math.random() * canvas.height, canvas.width, 5);
+    ctxIntro.fillStyle = "rgba(0,255,255,0.08)";
+    ctxIntro.fillRect(0, Math.random() * canvasIntro.height, canvasIntro.width, 5);
   }
 }
 
-function loop() {
+let introRunning = false;
+
+function introLoop() {
+  if (!introRunning) return;
+
   drawIntroBackground();
-  requestAnimationFrame(loop);
+  requestAnimationFrame(introLoop);
+}
+
+function startIntroLoop() {
+  introRunning = true;
+  introLoop();
+}
+
+function stopIntroLoop() {
+  introRunning = false;
 }
 
 function setDifficulty(mode) {
-  difficulty = mode;
-  localStorage.setItem("difficulty", difficulty);
-  console.log("Difficulty:", difficulty);
+  introDifficulty = mode;
+  localStorage.setItem("difficulty", introDifficulty);
 }
 
 function toggleOptions() {
@@ -129,19 +141,14 @@ function cycleDifficulty() {
   updateDifficultyButton();
 }
 
-function startGame() {
-  localStorage.setItem("difficulty", difficulties[difficultyIndex].value);
-  window.location.href = "game.html";
-}
-
 function startTutorial() {
   localStorage.setItem("difficulty", "tutorial");
-  window.location.href = "game.html";
+  startGame();
 }
 
 updateDifficultyButton();
 
-const keybinds = JSON.parse(localStorage.getItem("keybinds")) || {
+const keybindsIntro = JSON.parse(localStorage.getItem("keybinds")) || {
   heal: "h",
   dash: "shift",
   time: "p",
@@ -162,7 +169,7 @@ function displayKey(key) {
 function updateKeybindButtons() {
   document.querySelectorAll(".keybind-button").forEach(button => {
     const action = button.dataset.action;
-    button.textContent = `${action.toUpperCase()}: ${displayKey(keybinds[action])}`;
+    button.textContent = `${action.toUpperCase()}: ${displayKey(keybindsIntro[action])}`;
   });
 }
 
@@ -189,12 +196,13 @@ addEventListener("keydown", e => {
     key = " ";
   }
 
-  keybinds[hoveredKeybind] = key;
-  localStorage.setItem("keybinds", JSON.stringify(keybinds));
+  keybindsIntro[hoveredKeybind] = key;
+  localStorage.setItem("keybinds", JSON.stringify(keybindsIntro));
 
   updateKeybindButtons();
 });
 
 updateKeybindButtons();
 localStorage.setItem("difficulty", difficulties[difficultyIndex].value);
-loop();
+
+startIntroLoop();
