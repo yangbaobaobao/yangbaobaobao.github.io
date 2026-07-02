@@ -1,17 +1,22 @@
-const canvasIntro = document.getElementById("introCanvas");
-const ctxIntro = canvasIntro.getContext("2d");
+var canvasIntro;
+var ctxIntro;
 var credits = Number(localStorage.getItem("credits")) || 0;
 const ramAmountIntro = document.getElementById("ramAmount");
 ramAmountIntro.textContent = credits;
 
+function loadIntro() {
+  canvasIntro = document.getElementById("introCanvas");
+  ctxIntro = canvasIntro.getContext("2d");
+  canvasIntro.width = innerWidth;
+  canvasIntro.height = innerHeight;
+}
+
 let introDifficulty = "normal";
 
 
-canvasIntro.width = innerWidth;
-canvasIntro.height = innerHeight;
 
 
-function drawGrid(size, color, width) {
+function drawGridIntro(size, color, width) {
   ctxIntro.strokeStyle = color;
   ctxIntro.lineWidth = width;
 
@@ -31,12 +36,13 @@ function drawGrid(size, color, width) {
 }
 
 function drawIntroBackground() {
+  if (!canvasIntro) return;
   ctxIntro.fillStyle = "#020b14";
   ctxIntro.fillRect(0, 0, canvasIntro.width, canvasIntro.height);
 
-  drawGrid(25, "rgba(0,190,255,0.12)", 1);
-  drawGrid(150, "rgba(0,220,255,0.45)", 2);
-  drawGrid(450, "rgba(0,220,255,0.25)", 2);
+  drawGridIntro(25, "rgba(0,190,255,0.12)", 1);
+  drawGridIntro(150, "rgba(0,220,255,0.45)", 2);
+  drawGridIntro(450, "rgba(0,220,255,0.25)", 2);
 
   ctxIntro.strokeStyle = "rgba(0,255,255,0.04)";
   ctxIntro.lineWidth = 1;

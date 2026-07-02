@@ -344,8 +344,9 @@ function nextTutorialStep() {
     enemies.push(new AirPod(player.x, player.y + 500, 50, 1.6, 200, 200));
   }
 
-  if (tutorialStep === 8) {
+  if (tutorialStep === 1) {//xxxxxx
     showTutorialText("TUTORIAL COMPLETE");
+    console.log("XXXXXX");
     tutorialDone = true;
 
     //setTimeout(() => { localStorage.setItem("difficulty", "normal"); location.reload();}, 2000);
@@ -737,7 +738,7 @@ function draw(){
   canvas.style.filter = "invert("+invert+")";
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  drawTechBackgroundLose();
+  drawTechBackground();
 
   ctx.beginPath();
   ctx.arc(sx(0), sy(0), world.radius, 0, Math.PI*2);
@@ -892,7 +893,7 @@ function hitEnemyWithArc(x, y, angle, range, arc, damage, knockback) {
   }
 }
 
-function drawTechBackgroundLose() {
+function drawTechBackground() {
   // dark base
   ctx.fillStyle = "#020b14";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -962,16 +963,17 @@ function showRamCounter() {
 let gameRunning = false;
 
 function resetGame() {
-    gameRunning = true;
-    resetEverything();
+  gameRunning = true;
+  resetEverything();
+  loop();
 }
 
 function loop() {
-    if (gameRunning) {
-        update();
-        draw();
-    }
-    if (keys["n"]) localStorage.setItem("dismissed", "true");
+  if (!gameRunning) return;
+
+  update();
+  draw();
+  if (keys["n"]) localStorage.setItem("dismissed", "true");
     if (keys["/"]) localStorage.setItem("dismissed", "false");
     if (keys["@"]) {
       credits = 0;
@@ -979,16 +981,19 @@ function loop() {
       localStorage.setItem("credits", credits);
       showRamCounter();
     }
-    if (freezeGlitch.active) {
-      drawFreezeGlitch();
-      freezeGlitch.timer--;
 
-      if (freezeGlitch.timer <= 0) {
-        freezeGlitch.active = false;
-      }
+  if (freezeGlitch.active) {
+    drawFreezeGlitch();
+    freezeGlitch.timer--;
+
+    if (freezeGlitch.timer <= 0) {
+      freezeGlitch.active = false;
     }
-    requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
 }
+
 
 loop();
 

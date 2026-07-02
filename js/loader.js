@@ -1,9 +1,10 @@
 //Honestly, idk by this point, I tried to do this on my own for the first 1.5 hours but yea, W chatgpt
-
+//UPDATE damn i actualyl solved it (another annoying bug) without gpt
 const app = document.getElementById("app");
 const pageStyle = document.getElementById("pageStyle");
 
 const loadedScripts = new Set();
+var currentPage = "intro";
 
 function loadScriptOnce(src) {
   console.log("loading script:", src);
@@ -48,6 +49,7 @@ async function startGame() {
     await loadScriptOnce("js/enemy.js");
     await loadScriptOnce("js/player.js");
     await loadScriptOnce("js/game.js");
+    currentPage = "game";
 
     startEverything();
     resetGame();
@@ -65,10 +67,7 @@ async function goIntro() {
   await loadPage("intro.html", "intro.css");
 
   await loadScriptOnce("js/intro.js");
-
-  if (typeof startEverything === "function") {
-    startEverything();
-  }
+  loadIntro();
 }
 
 goIntro();
