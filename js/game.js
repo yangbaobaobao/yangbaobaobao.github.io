@@ -349,7 +349,7 @@ function nextTutorialStep() {
     tutorialDone = true;
 
     //setTimeout(() => { localStorage.setItem("difficulty", "normal"); location.reload();}, 2000);
-    setTimeout(() => { window.location.href = "index.html"}, 2000);
+    setTimeout(() => { goIntro()}, 2000);
   }
 }
 

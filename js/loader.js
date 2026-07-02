@@ -1,3 +1,5 @@
+//Honestly, idk by this point, I tried to do this on my own for the first 1.5 hours but yea, W chatgpt
+
 const app = document.getElementById("app");
 const pageStyle = document.getElementById("pageStyle");
 
