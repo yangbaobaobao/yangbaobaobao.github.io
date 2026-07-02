@@ -162,7 +162,7 @@ class Collectable {
         ctx.restore();
         ctx.restore();
 
-        if (dist(this.x, this.y, player.x, player.y) < this.radius/5 + player.radius) {
+        if (dist(this.x, this.y, player.x, player.y) < this.radius/2 + player.radius) {
             credits += this.amount;
             localStorage.setItem("credits", credits);
             showRamCounter();
