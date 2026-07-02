@@ -264,7 +264,7 @@ if (false){
 }
 
 const waves = [
-  { pattern: "circle", type: "Watch", count: 80 },
+  { pattern: "circle", type: "Watch", count: 8 },
   { pattern: "corners", type: "Ring", count: 2 },
   { pattern: "spiral", type: "AirPod", count: 50 },
   { pattern: "line", type: "Watch", count: 14 },
